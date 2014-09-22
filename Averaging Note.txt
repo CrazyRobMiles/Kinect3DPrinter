@@ -1,5 +1,0 @@
-You might want to fiddle with the averageSize value to get better quality results.
-
-It is presently 0 so that the viewfinder is more responsive. If you jack it up to 15 or so it pulls a lot more detail out of the subject, as long as they keep still.
-
-Rob
