@@ -1,7 +1,7 @@
 Kinect3DPrinter
 ===============
 
-You know that bit at the end of Star Wars 2 when Han Solo gets frozen into Carbonite?
+You know that bit at the end of Star Wars 2/5 when Han Solo gets frozen into Carbonite?
 
 Well, you can use this program to do the same to yourself.
 
