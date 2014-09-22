@@ -52,7 +52,7 @@ namespace Kinect3DCamera
 
         private void UpdateSensorStatus()
         {
-            if(sensor.IsAvailable)
+            if (sensor.IsAvailable)
             {
                 Title = "Kinect3DCamera - Kinect connected";
             }
@@ -94,7 +94,7 @@ namespace Kinect3DCamera
                 if (depthData == null)
                     depthData = new ushort[frame.FrameDescription.LengthInPixels];
 
-                if(gridHeights == null)
+                if (gridHeights == null)
                     gridHeights = new ushort[frame.FrameDescription.LengthInPixels];
 
                 frame.CopyFrameDataToArray(depthData);
@@ -190,7 +190,7 @@ namespace Kinect3DCamera
 
                 // Invert the screen for 200 milliseconds after taking a picture to show it has done something
 
-                if((now-lastSnapshotTime).TotalMilliseconds<200)
+                if ((now - lastSnapshotTime).TotalMilliseconds < 200)
                 {
                     for (int i = 0; i < depthColorImage.Length; i++)
                     {
@@ -216,11 +216,28 @@ namespace Kinect3DCamera
         uint[] total;
 
         int maxAverages = 50;
-        int averageSize = 0;
+        int averageSize = 15;
+        // flag value of -1 means no new average to set
+        int newAverageSize = -1;
         int activePlane = 0;
+
+        object AverageLock = new object();
+        void SetNoOfAverages(int inAverageSize)
+        {
+            newAverageSize = inAverageSize;
+        }
 
         unsafe ushort[] imageAverage(ushort[] data)
         {
+            if (newAverageSize != -1)
+            {
+                clearTotal();
+                clearAverage();
+                averageSize = newAverageSize;
+                activePlane = 0;
+                newAverageSize = -1;
+                return data;
+            }
 
             if (averageSize == 0) return data;
 
@@ -486,7 +503,7 @@ namespace Kinect3DCamera
             for (int x = 0; x < width - 1; x++)
             {
                 by = 0;
-                for (int y = 0; y < depth-1; y++)
+                for (int y = 0; y < depth - 1; y++)
                 {
                     // Make the first triangle
                     Vertex v1 = new Vertex(bx, by, (grid[x, y] - lo) * heightScale + baseHeight);
@@ -508,7 +525,7 @@ namespace Kinect3DCamera
             double[,] grid = new double[width, depth];
 
 
-            for (int x = width-1; x > 0; x--)
+            for (int x = width - 1; x > 0; x--)
             {
                 for (int y = 0; y < depth; y++)
                 {
@@ -524,14 +541,14 @@ namespace Kinect3DCamera
             if (depth % 2 == 1) depth--;
 
             double[,] filteredGrid = new double[width / 2, depth / 2];
-            int filtx=0, filty=0;
+            int filtx = 0, filty = 0;
 
-            for (int x = 0; x < width-2; x+=2)
+            for (int x = 0; x < width - 2; x += 2)
             {
-                for (int y = 0; y < depth-2; y+=2)
+                for (int y = 0; y < depth - 2; y += 2)
                 {
                     // Make an array of the values in the area we are averaging
-                    double [] square = new double [] {grid[x, y],grid[x+1, y],grid[x, y+1],grid[x+1, y+1]};
+                    double[] square = new double[] { grid[x, y], grid[x + 1, y], grid[x, y + 1], grid[x + 1, y + 1] };
 
                     // Work out their average
                     double total = 0;
@@ -550,7 +567,7 @@ namespace Kinect3DCamera
                         devTotal += dev * dev;
                     }
 
-                    double stdDev = Math.Sqrt(devTotal/square.Length);
+                    double stdDev = Math.Sqrt(devTotal / square.Length);
 
                     // Make a new average ignoring outliers
                     double revisedTotal = 0;
@@ -558,7 +575,7 @@ namespace Kinect3DCamera
 
                     foreach (double d in square)
                     {
-                        if (Math.Abs(d - firstMean) < stdDev) 
+                        if (Math.Abs(d - firstMean) < stdDev)
                         {
                             // Value looks OK - use it to work out the mean
                             revisedTotal += d;
@@ -566,9 +583,9 @@ namespace Kinect3DCamera
                         }
                     }
 
-                    double revisedMean ;
+                    double revisedMean;
 
-                    if (revisedCount>0)
+                    if (revisedCount > 0)
                     {
                         // If we have enough to calculate a revised mean, do it
                         revisedMean = revisedTotal / revisedCount;
@@ -664,11 +681,15 @@ Set the delay in the box next to the button.
 The ModelWidth slider sets the width of the model produced in mm.
 The ModelHeight slider sets the height of the model, in mm.
 
+The Number of Averages controls the amount of averaging that is done.
+Larger averages make for a more detailed scene, but make the viewfinder
+update more slowly.
+
 Needs Kinect Version 2 in a USB 3 port.
 
 www.robmiles.com
 September 2014
-", "Kinect 3D Camera");
+", "Kinect 3D Camera Version 1.1");
         }
 
 
@@ -702,9 +723,9 @@ September 2014
 
         void checkSelfie()
         {
-            if(takeSelfie)
+            if (takeSelfie)
             {
-                int timeLeft = selfieDelayInSecs - (int)Math.Round((DateTime.Now-selfieStartTime).TotalSeconds);
+                int timeLeft = selfieDelayInSecs - (int)Math.Round((DateTime.Now - selfieStartTime).TotalSeconds);
                 if (timeLeft == 0)
                 {
                     SelfieTimeTextBox.Text = selfieDelay;
@@ -745,6 +766,12 @@ September 2014
         private void SelfieButton_Click(object sender, RoutedEventArgs e)
         {
             startSelfie();
+        }
+
+        private void AverageSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            NumberOfAveragesTextBlock.Text = "Number of averages : " + Math.Round(NumberOfAverageSlider.Value).ToString();
+            SetNoOfAverages((int)Math.Round(NumberOfAverageSlider.Value));
         }
     }
 }

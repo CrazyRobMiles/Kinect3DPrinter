@@ -13,3 +13,18 @@ c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera
 c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\bin\Debug\Microsoft.Kinect.xml
 c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.exe
 c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.pdb
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\bin\Debug\Kinect3DCamera.exe.config
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.exe
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.pdb
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\bin\Debug\Kinect3DCamera.exe
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\bin\Debug\Kinect3DCamera.pdb
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\bin\Debug\Microsoft.Kinect.dll
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\bin\Debug\Microsoft.Kinect.xml
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.csprojResolveAssemblyReference.cache
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\MainWindow.baml
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\MainWindow.g.cs
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\App.g.cs
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera_MarkupCompile.cache
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.g.resources
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.Properties.Resources.resources
+C:\Users\Rob\Documents\GitHub\Kinect3DPrinter\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.csproj.GenerateResource.Cache
