@@ -1,0 +1,15 @@
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\bin\Debug\Kinect3DCamera.exe.config
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.csprojResolveAssemblyReference.cache
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\MainWindow.baml
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\MainWindow.g.cs
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\App.g.cs
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera_MarkupCompile.cache
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.g.resources
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.Properties.Resources.resources
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.csproj.GenerateResource.Cache
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\bin\Debug\Kinect3DCamera.exe
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\bin\Debug\Kinect3DCamera.pdb
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\bin\Debug\Microsoft.Kinect.dll
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\bin\Debug\Microsoft.Kinect.xml
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.exe
+c:\users\rob\documents\visual studio 2013\Projects\Kinect3DCamera\Kinect3DCamera\obj\Debug\Kinect3DCamera.pdb
