@@ -176,7 +176,10 @@ namespace Kinect3DCamera
 
                     try
                     {
-                        StoreSTLMesh(gridHeights, (int)kinectDepthImage.Height, (int)kinectDepthImage.Width, modelWidth, modelHeight, fullFilename);
+                        float baseHeight = 1;
+                        float baseOffset = 0;
+
+                        StoreSTLMesh(gridHeights, (int)kinectDepthImage.Height, (int)kinectDepthImage.Width, modelWidth, modelHeight, baseHeight, baseOffset, fullFilename);
                         // Set the start of the screen flash
                         lastSnapshotTime = DateTime.Now;
                     }
@@ -519,7 +522,7 @@ namespace Kinect3DCamera
             return result;
         }
 
-        List<Triangle> MakeMesh(ushort[] image, int width, int depth, int modelWidth, int modelHeight)
+        List<Triangle> MakeMesh(ushort[] image, int width, int depth, int modelWidth, int modelHeight, float baseHeight, float baseOffset)
         {
             int imagePos = 0;
             double[,] grid = new double[width, depth];
@@ -529,7 +532,7 @@ namespace Kinect3DCamera
             {
                 for (int y = 0; y < depth; y++)
                 {
-                    grid[x, y] = image[imagePos];
+                    grid[x, y] = image[imagePos]+baseOffset;
                     imagePos++;
                 }
             }
@@ -603,7 +606,7 @@ namespace Kinect3DCamera
                 filty = 0;
             }
 
-            List<Triangle> result = SolidPlot(grid: filteredGrid, modelWidth: modelWidth, baseHeight: 1, modelHeight: modelHeight);
+            List<Triangle> result = SolidPlot(grid: filteredGrid, modelWidth: modelWidth, baseHeight: baseHeight, modelHeight: modelHeight);
             return result;
         }
 
@@ -612,12 +615,15 @@ namespace Kinect3DCamera
         /// </summary>
         /// <param name="image">image data</param>
         /// <param name="width">width of the image in pixels</param>
-        /// <param name="depth"></param>
-        /// <param name="modelHeight"></param>
+        /// <param name="depth">depth of the image in pixels</param>
+        /// <param name="modelHeight">height of the highest part of the model</param>
+        /// <param name="modelHeight">height of the highest part of the model</param>
+        /// <param name="baseHeight">height of the base of the plate produced</param>
+        /// <param name="baseOffset">offset of the base z value to allow plates to be stacked.</param>
         /// <param name="filename"></param>
-        public void StoreSTLMesh(ushort[] image, int width, int depth, int modelWidth, int modelHeight, string filename)
+        public void StoreSTLMesh(ushort[] image, int width, int depth, int modelWidth, int modelHeight, float baseHeight, float baseOffset, string filename)
         {
-            List<Triangle> mesh = MakeMesh(image, width, depth, modelWidth, modelHeight);
+            List<Triangle> mesh = MakeMesh(image, width, depth, modelWidth, modelHeight, baseHeight, baseOffset);
             WriteTriangles(mesh, filename);
         }
 
@@ -687,9 +693,11 @@ update more slowly.
 
 Needs Kinect Version 2 in a USB 3 port.
 
+github.com/CrazyRobMiles/Kinect3DPrinter
+
 www.robmiles.com
 September 2014
-", "Kinect 3D Camera Version 1.1");
+", "Kinect 3D Camera Version 2.0");
         }
 
 

@@ -4,15 +4,115 @@
         "Microsoft.Kinect"
     </assembly>
     <members>
-        <member name="T:Microsoft.Kinect.Input.KinectGestureRecognizer">
+        <member name="M:Microsoft.Kinect.LongExposureInfraredFrameReader.AcquireLatestFrame">
             <summary>
-Kinect gesture recognizer.
+Acquires the latest available frame.
+</summary>
+            <remarks>
+A given reader will only return each frame once. If no new frames are available since the
+last call to this method, the result will be null.
+</remarks>
+            <returns>Returns a valid frame, or null if no new frames are available.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameReader.IsPaused">
+            <summary>
+Gets or sets the readers pause state.
+</summary>
+            <value>Whether the reader is paused.</value>
+            <remarks>
+Paused readers will deliver no new FrameArrived events and will always return null from
+<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
+not actively in use.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameReader.LongExposureInfraredFrameSource">
+            <summary>
+Gets the source for this frame type.
 </summary>
         </member>
-        <member name="D:CURSOR_ID">
-            <copyright file="KinectGestureRecognizer.h" company="Microsoft Corporation">
-   Copyright (c) Microsoft Corporation. All rights reserved.
-</copyright>
+        <member name="E:Microsoft.Kinect.LongExposureInfraredFrameReader.FrameArrived">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.LongExposureInfraredFrameReader.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.LongExposureInfraredFrameReader">
+            <summary>
+Represents a reader for long exposure infrared frames. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameArrivedEventArgs.FrameReference">
+            <summary>
+Gets a nonexclusive reference to the frame payload.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.LongExposureInfraredFrameArrivedEventArgs">
+            <summary>
+Represents the arguments for a long exposure infrared frame reader's FrameArrived event. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.LongExposureInfraredFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+            <remarks>
+Acquired frames hold an exclusive resource and no other frames may be acquired for this
+frame type. Therefore, acquired frames should be disposed as quickly as possible.
+</remarks>
+            <returns> The actual long exposure infrared frame from the reference if successful; otherwise, null</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameReference.RelativeTime">
+            <summary>
+Gets the unique relative time at which this frame was produced.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.LongExposureInfraredFrameReference">
+            <summary>
+Represents a reference to an actual long exposure infrared frame. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.LongExposureInfraredFrame.CopyFrameDataToIntPtr(System.IntPtr,System.UInt32)">
+            <summary>
+Copies raw frame data into the memory location provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.LongExposureInfraredFrame.CopyFrameDataToArray(System.UInt16[])">
+            <summary>
+Copies the long exposure frame data into the array provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.LongExposureInfraredFrame.LockImageBuffer">
+            <summary>
+Locks the buffer so the data can be read. 
+</summary>
+            <remarks>
+When you are finished reading the data, dispose the buffer.
+</remarks>
+            <returns>The underlying buffer used by the system to store this frame's data.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrame.FrameDescription">
+            <summary>
+Gets the frame description for the underlying image format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrame.LongExposureInfraredFrameSource">
+            <summary>
+Gets the long exposure infrared frame source.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.LongExposureInfraredFrame">
+            <summary>
+Represents a long exposure infrared frame. 
+</summary>
         </member>
         <member name="M:Microsoft.Kinect.InfraredFrameReader.AcquireLatestFrame">
             <summary>
@@ -40,9 +140,19 @@ not actively in use.
 Gets the source for this frame type.
 </summary>
         </member>
+        <member name="E:Microsoft.Kinect.InfraredFrameReader.FrameArrived">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
         <member name="E:Microsoft.Kinect.InfraredFrameReader.PropertyChanged">
             <summary>
 Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.InfraredFrameReader">
+            <summary>
+Represents a reader for infrared frames. 
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.InfraredFrameArrivedEventArgs.FrameReference">
@@ -50,21 +160,1560 @@ Event that fires whenever a property changes.
 Gets a nonexclusive reference to the frame payload.
 </summary>
         </member>
+        <member name="T:Microsoft.Kinect.InfraredFrameArrivedEventArgs">
+            <summary>
+Represents the arguments for an infrared frame reader's FrameArrived event. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.InfraredFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+            <remarks>
+Acquired frames hold an exclusive resource and no other frames may be acquired for this
+frame type. Therefore, acquired frames should be disposed as quickly as possible.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.InfraredFrameReference.RelativeTime">
+            <summary>
+Returns the unique relative time at which this frame was produced.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.InfraredFrameReference">
+            <summary>
+Represents a reference to an actual infrared frame. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.InfraredFrame.CopyFrameDataToIntPtr(System.IntPtr,System.UInt32)">
+            <summary>
+Copies the infrared frame data into the memory location provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.InfraredFrame.CopyFrameDataToArray(System.UInt16[])">
+            <summary>
+Copies the infrared frame data into the array provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.InfraredFrame.LockImageBuffer">
+            <summary>
+Gives an app access to the underlying buffer used by the system to store this frame's data. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.InfraredFrame.FrameDescription">
+            <summary>
+Gets the frame description for the underlying image format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.InfraredFrame.InfraredFrameSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.InfraredFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.InfraredFrame">
+            <summary>
+Represents a frame that provides a view of the scene that looks just like a black and white photograph, but is actively lit, so brightness is consistent regardless of location and room brightness. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectGestureRecognizer.CompleteGesture">
+            <summary>
+Causes the gesture recognizer to finalize an interaction.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectGestureRecognizer.ProcessInertia">
+            <summary>
+Performs inertia calculations and raises the various inertia events.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectGestureRecognizer.ProcessUpEvent(Microsoft.Kinect.Input.KinectPointerPoint)">
+            <summary>
+Processes pointer input and raises the KinectGestureRecognizer events appropriate to a pointer up action for the gestures and manipulations specified by the GestureSettings property. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectGestureRecognizer.ProcessMoveEvents(System.Collections.Generic.IList`1{Microsoft.Kinect.Input.KinectPointerPoint})">
+            <summary>
+Processes pointer input and raises the KinectGestureRecognizer events appropriate to a pointer move action for the gestures and manipulations specified by the GestureSettings property. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectGestureRecognizer.ProcessDownEvent(Microsoft.Kinect.Input.KinectPointerPoint)">
+            <summary>
+Processes pointer input and raises the KinectGestureRecognizer events appropriate to a pointer down action for the gestures and manipulations specified by the GestureSettings property. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectGestureRecognizer.BoundingRect">
+            <summary>
+Gets the bounds of a tappable gesture recognizer.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectGestureRecognizer.AutoProcessInertia">
+            <summary>
+Gets or sets a value that indicates whether manipulations during inertia are generated automatically.  If false, the app is expected to call ProcessInertia periodically.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectGestureRecognizer.InertiaTranslationDisplacement">
+            <summary>
+Gets or sets a value that indicates the relative change in the screen location of an object from the start of inertia to the end of inertia (when the translation manipulation is complete). 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectGestureRecognizer.InertiaTranslationDeceleration">
+            <summary>
+Gets or sets a value that indicates the rate of deceleration from the start of inertia to the end of inertia (when the translation manipulation is complete). 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectGestureRecognizer.IsActive">
+            <summary>
+Gets a value that indicates whether an interaction is being processed.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectGestureRecognizer.IsInertial">
+            <summary>
+Gets a value that indicates whether a manipulation is still being processed during inertia (no input points are active).
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectGestureRecognizer.GestureSettings">
+            <summary>
+Gets or sets a value that indicates the gesture and manipulation settings supported by an application.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.PressingCompleted">
+            <summary>
+Occurs when the system no longer considers the pointer to be over a tappable gesture recognizer.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.PressingUpdated">
+            <summary>
+Occurs as additional points are processed by the gesture recognizer during a press gesture.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.PressingStarted">
+            <summary>
+Occurs when the pointer begins a press gesture over a tappable gesture recognizer.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.ManipulationCompleted">
+            <summary>
+Occurs when the input points are lifted and all subsequent motion (translation or zoom) through inertia has ended.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.ManipulationInertiaStarting">
+            <summary>
+Occurs when all contact points are lifted during a manipulation and the velocity of the manipulation is significant enough to initiate inertia behavior (translation and zoom continue after the input pointers are lifted). 
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.ManipulationUpdated">
+            <summary>
+Occurs after one or more input points have been initiated and subsequent motion (translation or zoom) is under way.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.ManipulationStarted">
+            <summary>
+Occurs when one or more input points have been initiated and subsequent motion (translation or zoom) has begun.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.Holding">
+            <summary>
+Occurs when a user performs a press and hold gesture.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectGestureRecognizer.Tapped">
+            <summary>
+Occurs when the Kinect for Windows sensor input is interpreted as a tap gesture.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectGestureRecognizer">
+            <summary>
+Provides gesture and manipulation recognition, and settings. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPressingCompletedEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last PressingCompleted event. 
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectPressingCompletedEventArgs">
+            <summary>
+Provides data for the PressingCompleted event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPressingUpdatedEventArgs.HoldProgress">
+            <summary>
+Gets a normalized value indicating the progress of a hold gesture.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPressingUpdatedEventArgs.PressExtent">
+            <summary>
+Gets a normalized Z value for the pressing gesture.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPressingUpdatedEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last PressingUpdated event.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectPressingUpdatedEventArgs">
+            <summary>
+Represents the arguments for a KinectPressingUpdated event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPressingStartedEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last PressingStarted event. 
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectPressingStartedEventArgs">
+            <summary>
+Provides data for the PressingStarted event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationCompletedEventArgs.Velocities">
+            <summary>
+Gets values that indicate the velocities of the transformation deltas (translation, rotation, 
+scale) for a manipulation at the ManipulationCompleted event.  
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationCompletedEventArgs.Cumulative">
+            <summary>
+Gets values that indicate the accumulated transformation deltas (translation, rotation, scale) 
+of a completed manipulation (from the start of the manipulation to the end of inertia). 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationCompletedEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last manipulation event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationCompletedEventArgs.PointerDeviceType">
+            <summary>
+Gets the device type of the input source.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectManipulationCompletedEventArgs">
+            <summary>
+Provides data for the ManipulationCompleted event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationInertiaStartingEventArgs.Velocities">
+            <summary>
+Gets values that indicate the velocities of the transformation deltas (translation, rotation, 
+scale) for a manipulation at the ManipulationInertiaStarting event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationInertiaStartingEventArgs.Cumulative">
+            <summary>
+Gets values that indicate the accumulated transformation deltas (translation, rotation, scale) 
+for a manipulation before inertia begins.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationInertiaStartingEventArgs.Delta">
+            <summary>
+Gets values that indicate the changes in the transformation deltas (translation, rotation, scale)
+of a manipulation since the last manipulation event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationInertiaStartingEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last manipulation event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationInertiaStartingEventArgs.PointerDeviceType">
+            <summary>
+Gets the device type of the input source.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectManipulationInertiaStartingEventArgs">
+            <summary>
+Provides data for the ManipulationInertiaStarting event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationUpdatedEventArgs.Velocities">
+            <summary>
+Gets values that indicate the velocities of the transformation deltas (translation, rotation, 
+scale) for a manipulation at the ManipulationUpdated event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationUpdatedEventArgs.Cumulative">
+            <summary>
+Gets values that indicate the accumulated transformation deltas (translation, rotation, scale) 
+for a manipulation from the beginning of the interaction to the ManipulationUpdated event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationUpdatedEventArgs.Delta">
+            <summary>
+Gets values that indicate the changes in the transformation deltas (translation, rotation, scale) 
+of a manipulation since the last manipulation event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationUpdatedEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last manipulation event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationUpdatedEventArgs.PointerDeviceType">
+            <summary>
+Gets the device type of the input source.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectManipulationUpdatedEventArgs">
+            <summary>
+Provides data for the ManipulationUpdated event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationStartedEventArgs.Cumulative">
+            <summary>
+Gets values that indicate the accumulated transformation deltas (translation, rotation, scale) for a manipulation before the ManipulationInertiaStarting event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationStartedEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last manipulation event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectManipulationStartedEventArgs.PointerDeviceType">
+            <summary>
+Gets the device type of the input source.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectManipulationStartedEventArgs">
+            <summary>
+Provides data for the ManipulationStarted event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectHoldingEventArgs.HoldingState">
+            <summary>
+Gets the state of the Holding event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectHoldingEventArgs.Position">
+            <summary>
+Gets the location of the holding event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectHoldingEventArgs.PointerDeviceType">
+            <summary>
+Gets the device type of the input source.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectHoldingEventArgs">
+            <summary>
+Provides data for the Holding event. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectTappedEventArgs.TapCount">
+            <summary>
+Gets the number of times the tap interaction was detected.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectTappedEventArgs.Position">
+            <summary>
+Gets the location of the pointer associated with the manipulation for the last manipulation event.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectTappedEventArgs.PointerDeviceType">
+            <summary>
+Gets the device type of the input source.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectTappedEventArgs">
+            <summary>
+Provides data for the Tapped event. 
+</summary>
+        </member>
+        <member name="D:CURSOR_ID">
+            <copyright file="KinectGestureRecognizer.h" company="Microsoft Corporation">
+   Copyright (c) Microsoft Corporation. All rights reserved.
+</copyright>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.LeanTrackingState">
+            <summary>
+Gets the tracking state for the body lean.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.Lean">
+            <summary>
+Gets the lean vector of the body.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.IsRestricted">
+            <summary>
+Gets whether or not the body is restricted. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.IsTracked">
+            <summary>
+Gets whether or not the body is tracked.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.TrackingId">
+            <summary>
+Gets the tracking ID for the body.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.ClippedEdges">
+            <summary>
+Gets the edges of the field of view that clip the body.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.Engaged">
+            <summary>
+Gets the status of the body's engagement. This API is not implemented in the Kinect for Windows v2 SDK. It is included to support cross-compilation with the Xbox SDK. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.HandRightConfidence">
+            <summary>
+Gets the confidence of the body's right hand state. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.HandRightState">
+            <summary>
+Gets the status of the body's right hand state.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.HandLeftConfidence">
+            <summary>
+Gets the confidence of the body's left hand state. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.HandLeftState">
+            <summary>
+Gets the status of the body's left hand state.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.Appearance">
+            <summary>
+Gets the status of the body's possible appearance characteristics. This API is not implemented in the Kinect for Windows v2 SDK and will always return null. It is included to support cross-compilation with the Xbox SDK. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.Activities">
+            <summary>
+Gets the status of the body's possible activities. This API is not implemented in the Kinect for Windows v2 SDK and will always return null. It is included to support cross-compilation with the Xbox SDK. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.Expressions">
+            <summary>
+Gets the status of the body's possible expressions. This API is not implemented in the Kinect for Windows v2 SDK and will always return null. It is included to support cross-compilation with the Xbox SDK. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.JointOrientations">
+            <summary>
+Gets the joint orientations of the body.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.Joints">
+            <summary>
+Gets the joint positions of the body. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Body.JointCount">
+            <summary>
+Gets the number of joints in a body.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Body">
+            <summary>
+Represents a single body.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.AudioBeamSubFrame.CopyFrameDataToIntPtr(System.IntPtr,System.UInt32)">
+            <summary>
+Copy the audio buffer (32-bit float, mono, 16khz sample rate) into the memory location provided.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.AudioBeamSubFrame.CopyFrameDataToArray(System.Byte[])">
+            <summary>
+Copy the audio buffer (32-bit float, mono, 16khz sample rate) into the array provided.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.AudioBeamSubFrame.LockAudioBuffer">
+            <summary>
+Locks and returns the audio buffer (32-bit float, mono, 16khz sample rate). The caller
+must dispose of the buffer when done.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.AudioBodyCorrelations">
+            <summary>
+Acquires the list of the AudioBodyCorrelation objects available in ths subframe.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the subframe was captured.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.AudioBeamMode">
+            <summary>
+Gets the audio beam mode.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.BeamAngleConfidence">
+            <summary>
+Gets the confidence in the beam angle; the range is [0.0, 1.0], where 1 is the highest possible confidence.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.BeamAngle">
+            <summary>
+Gets the angle (in radians) of the audio beam, which is the direction that the sensor is actively listening.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.Duration">
+            <summary>
+Gets the duration of the subframe.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.FrameLengthInBytes">
+            <summary>
+Gets the size in bytes of the audio subframe buffer.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBeamSubFrame">
+            <summary>
+Represents an audio beam sub frame. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBodyCorrelation.BodyTrackingId">
+            <summary>
+Gets the unique body tracking id associated with this subframe.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBodyCorrelation">
+            <summary>
+Represents a correlation between an audio frame and a unique body tracking id.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.MultiSourceFrameReader.AcquireLatestFrame">
+            <summary>
+Acquires the latest available frame.
+</summary>
+            <remarks>
+A given reader will only return each frame once. If no new frames are available since the
+last call to this method, the result will be null.
+</remarks>
+            <returns>Returns a valid frame, or null if no new frames are available.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrameReader.FrameSourceTypes">
+            <summary>
+Gets the frame source types of the reader.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrameReader.IsPaused">
+            <summary>
+Gets or sets the readers pause state.
+</summary>
+            <value>Whether the reader is paused.</value>
+            <remarks>
+Paused readers will deliver no new FrameArrived events and will always return null from
+<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
+not actively in use.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrameReader.KinectSensor">
+            <summary>
+Gets the Kinect sensor associated with the reader.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.MultiSourceFrameReader.MultiSourceFrameArrived">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.MultiSourceFrameReader.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.MultiSourceFrameReader">
+            <summary>
+Represents a reader for multi source frames.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrameArrivedEventArgs.FrameReference">
+            <summary>
+Gets a nonexclusive reference to the frame payload.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.MultiSourceFrameArrivedEventArgs">
+            <summary>
+Represents the arguments for a multi source frame reader's FrameArrived event. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.MultiSourceFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+            <remarks>
+Acquired frames hold an exclusive resource and no other frames may be acquired for this
+frame type. Therefore, acquired frames should be disposed as quickly as possible.
+</remarks>
+            <returns>The current frame held by this reference when successful; otherwise, null.</returns>
+        </member>
+        <member name="T:Microsoft.Kinect.MultiSourceFrameReference">
+            <summary>
+Represents a reader for multi source frames. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrame.BodyFrameReference">
+            <summary>
+Gets the body frame reference of the multi source frame. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrame.BodyIndexFrameReference">
+            <summary>
+Gets the body index frame reference of the multi source frame. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrame.LongExposureInfraredFrameReference">
+            <summary>
+Gets the long exposure infrared frame reference of the multi source frame. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrame.InfraredFrameReference">
+            <summary>
+Gets the infrared frame reference of the multi source frame. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrame.DepthFrameReference">
+            <summary>
+Gets the depth frame reference of the multi source frame. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrame.ColorFrameReference">
+            <summary>
+Gets the color frame reference of the multi source frame. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.MultiSourceFrame.KinectSensor">
+            <summary>
+Gets the Kinect sensor reference of the multi source frame. 
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.MultiSourceFrame">
+            <summary>
+Represents a multi source frame from the KinectSensor.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.LongExposureInfraredFrameSource.OpenReader">
+            <summary>
+Creates and returns a new reader object. This will activate the source if not already active.
+</summary>
+            <returns>Returns the newly opened frame reader.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameSource.FrameDescription">
+            <summary>
+Gets the frame description of the long exposure infrared frames. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameSource.IsActive">
+            <summary>
+Gets whether this source has any active (unpaused) readers.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameSource.KinectSensor">
+            <summary>
+Gets the KinectSensor with which this source is associated.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.LongExposureInfraredFrameSource.FrameCaptured">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.LongExposureInfraredFrameSource.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.LongExposureInfraredFrameSource">
+            <summary>
+Represents a source of long exposure infrared frames from a KinectSensor. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.InfraredFrameSource.OpenReader">
+            <summary>
+Creates and returns a new reader object. This will activate the source if not already active.
+</summary>
+            <returns>Returns the newly opened frame reader.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.InfraredFrameSource.FrameDescription">
+            <summary>
+Gets the frame description for the format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.InfraredFrameSource.IsActive">
+            <summary>
+Gets whether this source has any active (unpaused) readers.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.InfraredFrameSource.KinectSensor">
+            <summary>
+Gets the KinectSensor with which this source is associated.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.InfraredFrameSource.FrameCaptured">
+            <summary>
+Event that fires whenever an infrared frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.InfraredFrameSource.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.InfraredFrameSource">
+            <summary>
+Represents a source of infrared frames from a KinectSensor. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyIndexFrameSource.OpenReader">
+            <summary>
+Creates and returns a new reader object. This will activate the source if not already active.
+</summary>
+            <returns>Returns the newly opened frame reader.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrameSource.FrameDescription">
+            <summary>
+Gets the frame description for the default (raw) color format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrameSource.IsActive">
+            <summary>
+Gets whether this source has any active (unpaused) readers.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrameSource.KinectSensor">
+            <summary>
+Gets the KinectSensor with which this source is associated.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.BodyIndexFrameSource.FrameCaptured">
+            <summary>
+Event that fires whenever a body index frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.BodyIndexFrameSource.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyIndexFrameSource">
+            <summary>
+Represents a source of body index frames from a KinectSensor.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyFrameSource.OverrideHandTracking(System.UInt64,System.UInt64)">
+            <summary>
+Override hand tracking, replacing tracking of the old id with the new one.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyFrameSource.OverrideHandTracking(System.UInt64)">
+            <summary>
+Overrides the default behavior of tracking the hands of the nearest bodies to track the hands of the specified body.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyFrameSource.OpenReader">
+            <summary>
+Creates and returns a new reader object. This will activate the source if not already active.
+</summary>
+            <returns>Returns the newly opened frame reader.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrameSource.BodyCount">
+            <summary>
+Gets the number of bodies.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrameSource.IsActive">
+            <summary>
+Gets whether this source has any active (unpaused) readers.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrameSource.KinectSensor">
+            <summary>
+Gets the KinectSensor with which the body frame source is associated.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.BodyFrameSource.FrameCaptured">
+            <summary>
+Event that fires whenever a body frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.BodyFrameSource.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyFrameSource">
+            <summary>
+Represents a source of body frames from a KinectSensor.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyIndexFrameReader.AcquireLatestFrame">
+            <summary>
+Acquires the latest available frame.
+</summary>
+            <remarks>
+A given reader will only return each frame once. If no new frames are available since the
+last call to this method, the result will be null.
+</remarks>
+            <returns>Returns a valid frame, or null if no new frames are available.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrameReader.IsPaused">
+            <summary>
+Gets or sets the readers pause state.
+</summary>
+            <value>Whether the reader is paused.</value>
+            <remarks>
+Paused readers will deliver no new FrameArrived events and will always return null from
+<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
+not actively in use.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrameReader.BodyIndexFrameSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.BodyIndexFrameReader.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyIndexFrameReader">
+            <summary>
+Represents a reader for body index frames.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrameArrivedEventArgs.FrameReference">
+            <summary>
+Gets a nonexclusive reference to the frame payload.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyIndexFrameArrivedEventArgs">
+            <summary>
+Represents the arguments for a body index frame reader's FrameArrived event.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyIndexFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+            <remarks>
+Acquired frames hold an exclusive resource and no other frames may be acquired for this
+frame type. Therefore, acquired frames should be disposed as quickly as possible.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrameReference.RelativeTime">
+            <summary>
+Returns the unique relative time at which this frame was produced.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyIndexFrameReference">
+            <summary>
+Represents a reference to an actual body index frame.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyIndexFrame.CopyFrameDataToIntPtr(System.IntPtr,System.UInt32)">
+            <summary>
+Copies the body index frame data into the memory location provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyIndexFrame.CopyFrameDataToArray(System.Byte[])">
+            <summary>
+Copies the body index frame data into the array provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyIndexFrame.LockImageBuffer">
+            <summary>
+Gives an app access to the underlying buffer used by the system to store this frame's data. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrame.FrameDescription">
+            <summary>
+Gets the frame description for the underlying image format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrame.BodyIndexFrameSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyIndexFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyIndexFrame">
+            <summary>
+Represents a frame that indicates which depth or infrared pixels belong to tracked people and which do not.
+For each pixel, a value of 255 indicates no tracked body present, and any other value indicates a tracked player id corresponding to the value.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectCoreWindow.SetKinectTwoPersonManualEngagement(Microsoft.Kinect.Input.BodyHandPair,Microsoft.Kinect.Input.BodyHandPair)">
+            <summary>
+Sets the engagement mode to two person manual engagement.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectCoreWindow.SetKinectOnePersonManualEngagement(Microsoft.Kinect.Input.BodyHandPair)">
+            <summary>
+Sets the engagement mode to one person manual engagement.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectCoreWindow.SetKinectTwoPersonSystemEngagement">
+            <summary>
+Sets the engagement mode to two person system engagement.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectCoreWindow.SetKinectOnePersonSystemEngagement">
+            <summary>
+Sets the engagement mode to one person system engagement.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectCoreWindow.OverrideKinectInteractionMode(Microsoft.Kinect.Input.KinectInteractionMode)">
+            <summary>
+Overrides the current interaction mode.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectCoreWindow.GetForCurrentThread">
+            <summary>
+Gets the KinectCoreWindow for the current thread. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectCoreWindow.MaximumKinectEngagedPersonCount">
+            <summary>
+Gets the maximum number of users that can be tracked as engaged at one time.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectCoreWindow.KinectManualEngagedHands">
+            <summary>
+Gets a list of body hand pairs that are manually engaged.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectCoreWindow.KinectEngagementMode">
+            <summary>
+Gets the current Kinect engagement mode.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectCoreWindow.PointerExited">
+            <summary>
+Occurs when a pointer ID is no longer seen by the window.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectCoreWindow.PointerMoved">
+            <summary>
+Occurs when a pointer ID seen by the window moves.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.Input.KinectCoreWindow.PointerEntered">
+            <summary>
+Occurs when a pointer ID is first seen by the window.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectCoreWindow">
+            <summary>
+Represents a Kinect for Windows app with input events and basic user interface behaviors.
+Only 1 core window is in "focus" at any one time, and that one gets the pointers and related events.
+The coordinate space of the window is normalized to the [0,1] range in both dimensions.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.BodyHandPair.HandType">
+            <summary>
+Gets or sets the HandType.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.BodyHandPair.BodyTrackingId">
+            <summary>
+Gets or sets the unique body tracking id.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.BodyHandPair">
+            <summary>
+Represents a body tracking ID and a hand.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.Input.KinectPointerEventArgs.GetIntermediatePoints">
+            <summary>
+Retrieves the pointer data for up to the last 64 pointer locations since the last pointer event.
+</summary>
+            <returns>The data for each pointer.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerEventArgs.CurrentPoint">
+            <summary>
+Gets the pointer data of the last pointer event.
+</summary>
+            <value>Information about the state and screen position of the pointer.</value>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectPointerEventArgs">
+            <summary>
+Provides data for KinectCoreWindow pointer events.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPoint.Properties">
+            <summary>
+Gets extended information about the input pointer.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPoint.RawPosition">
+            <summary>
+Gets the raw location of the pointer input in client coordinates.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPoint.Position">
+            <summary>
+Gets the location of the pointer input in client coordinates.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPoint.PointerId">
+            <summary>
+Gets a unique identifier for the input pointer.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectPointerPoint">
+            <summary>
+Provides basic properties for the input pointer associated with a Kinect for Windows input. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.UnclampedPosition">
+            <summary>
+Position of the pointer, which may go beyond the [0, 1] bounds of the Kinect Core Window.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.PressExtent">
+            <summary>
+Current press extent of the hand.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.HandRotation">
+            <summary>
+Gets the rotation of the hand associated with the pointer point.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.BodyTimeCounter">
+            <summary>
+Gets a time stamp to associate the pointer with a BodyFrame Class object. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.HandReachExtent">
+            <summary>
+Gets the hand extent reach of the pointer
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.HandType">
+            <summary>
+Gets the hand type of the pointer
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.BodyTrackingId">
+            <summary>
+Gets a unique identifier that associates the pointer with a Body object. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.IsEngaged">
+            <summary>
+Gets a value that indicates whether the pointer point is engaged.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.IsInRange">
+            <summary>
+Gets a value that indicates whether the pointer point is in range.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.Input.KinectPointerPointProperties.IsPrimary">
+            <summary>
+Gets a value that indicates whether the pointer is being tracked as the primary engaged user.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.Input.KinectPointerPointProperties">
+            <summary>
+Provides extended properties for a KinectPointerPoint object. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.KinectSensor.OpenMultiSourceFrameReader(Microsoft.Kinect.FrameSourceTypes)">
+            <summary>
+Creates a new frame reader for correlating multiple frame sources.
+</summary>
+            <param name="enabledFrameSourceTypes">Flags specifying which frame types to enable.</param>
+            <returns>A new reader enabled for the specified source types.</returns>
+        </member>
+        <member name="M:Microsoft.Kinect.KinectSensor.Close">
+            <summary>
+Closes and releases system resources associated with the Kinect Sensor.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.KinectSensor.Open">
+            <summary>
+Opens the KinectSensor.
+</summary>
+            <returns>The default sensor.</returns>
+        </member>
+        <member name="M:Microsoft.Kinect.KinectSensor.GetDefault">
+            <summary>
+Gets the default sensor. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.AudioSource">
+            <summary>
+Gets the source for audio frames. 
+</summary>
+            <value>The source for audio frames.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.BodyFrameSource">
+            <summary>
+Gets the source for body frames. 
+</summary>
+            <value>The source for body frames.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.BodyIndexFrameSource">
+            <summary>
+Gets the source for body index frames. 
+</summary>
+            <value>The source for body index frames.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.LongExposureInfraredFrameSource">
+            <summary>
+Gets the source for long exposure infrared frames.
+</summary>
+            <value>The source for long exposure infrared frames.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.InfraredFrameSource">
+            <summary>
+Gets the source for infrared frames.
+</summary>
+            <value>The source for infrared frames.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.DepthFrameSource">
+            <summary>
+Gets the source for depth frames.
+</summary>
+            <value>The source for depth frames.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.ColorFrameSource">
+            <summary>
+Gets the source for color frames.
+</summary>
+            <value>The source for color frames.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.CoordinateMapper">
+            <summary>
+Gets the coordinate mapper.
+</summary>
+            <value>The coordinate mapper.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.UniqueKinectId">
+            <summary>
+Gets the unique ID for the KinectSensor.
+</summary>
+            <value>The unique ID for the KinectSensor.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.KinectCapabilities">
+            <summary>
+Gets the capabilities of the KinectSensor.
+</summary>
+            <value>The capabilities of the KinectSensor.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.IsAvailable">
+            <summary>
+Gets whether the KinectSensor is capable of delivering frame data.
+</summary>
+            <value>The availability of the KinectSensor.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.KinectSensor.IsOpen">
+            <summary>
+Gets whether the KinectSensor is open.
+</summary>
+            <value>The open state of the KinectSensor.</value>
+        </member>
+        <member name="E:Microsoft.Kinect.KinectSensor.IsAvailableChanged">
+            <summary>
+Occurs when the availability of the KinectSensor changes.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.KinectSensor.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.KinectSensor">
+            <summary>
+Represents a KinectSensor device.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.IsAvailableChangedEventArgs.IsAvailable">
+            <summary>
+Gets whether or not the KinectSensor is available.
+</summary>
+            <value>The availability of the KinectSensor.</value>
+        </member>
+        <member name="T:Microsoft.Kinect.IsAvailableChangedEventArgs">
+            <summary>
+Represents the arguments for a KinectSensor's IsAvailableChanged event.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.InteractionFrameSource.OpenReader">
+            <summary>
+Creates and returns a new reader object. This will activate the source if not already active.
+</summary>
+            <returns>Returns the newly opened frame reader.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.InteractionFrameSource.IsActive">
+            <summary>
+Gets whether this source has any active (unpaused) readers.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.InteractionFrameSource.KinectSensor">
+            <summary>
+Gets the KinectSensor with which this source is associated.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.InteractionFrameSource.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyFrameReader.AcquireLatestFrame">
+            <summary>
+Acquires the latest available frame.
+</summary>
+            <remarks>
+A given reader will only return each frame once. If no new frames are available since the
+last call to this method, the result will be null.
+</remarks>
+            <returns>Returns a valid frame, or null if no new frames are available.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrameReader.IsPaused">
+            <summary>
+Gets or sets the readers pause state.
+</summary>
+            <value>Whether the reader is paused.</value>
+            <remarks>
+Paused readers will deliver no new FrameArrived events and will always return null from
+<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
+not actively in use.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrameReader.BodyFrameSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.BodyFrameReader.FrameArrived">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.BodyFrameReader.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrameArrivedEventArgs.FrameReference">
+            <summary>
+Gets a nonexclusive reference to the frame payload.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyFrameArrivedEventArgs">
+            <summary>
+Represents the arguments for a body frame reader's FrameArrived event.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+            <remarks>
+Acquired frames hold an exclusive resource and no other frames may be acquired for this
+frame type. Therefore, acquired frames should be disposed as quickly as possible.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrameReference.RelativeTime">
+            <summary>
+Returns the unique relative time at which this frame was produced.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyFrameReference">
+            <summary>
+Represents a reference to an actual body frame.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.BodyFrame.GetAndRefreshBodyData(System.Collections.Generic.IList`1{Microsoft.Kinect.Body})">
+            <summary>
+Updates a given array of bodies with the data from this frame.
+</summary>
+            <param name="bodies">The array of bodies to update.</param>
+            <remarks>
+The given body array must be initialized to size <c>BodyCount</c>, but may have null
+elements. For each element that is not null, the existing body will be updated with new
+data. Otherwise a new body object will be created. For performance, callers should cache
+the resulting array for use with future frames.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrame.FloorClipPlane">
+            <summary>
+Gets the floor clip plane of the body frame in hessian normal form.
+The (x,y,z) components are a unit vector indicating the normal of the plane, and w is the
+distance from the plane to the origin in meters.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrame.BodyCount">
+            <summary>
+Gets the number of bodies which will be returned by <c>GetAndRefreshBodyData</c>.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrame.BodyFrameSource">
+            <summary>
+Gets the source of the body frame.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.BodyFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.BodyFrame">
+            <summary>
+Represents a frame that contains all the computed real-time tracking information about people that are in view of the sensor.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameDescription.BytesPerPixel">
+            <summary>
+Gets the bytes per pixel of the data for an image frame.
+</summary>
+            <value>The bytes per pixel of the data for an image frame.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameDescription.LengthInPixels">
+            <summary>
+Gets the length in pixels of the data for an image frame.
+</summary>
+            <value>The length in pixels of the data for an image frame.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameDescription.DiagonalFieldOfView">
+            <summary>
+Gets the diagonal field of view for an image frame, in degrees.
+</summary>
+            <value>The diagonal field of view of an image frame, in degrees.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameDescription.VerticalFieldOfView">
+            <summary>
+Gets the vertical field of view for an image frame, in degrees.
+</summary>
+            <value>The vertical field of view of an image frame, in degrees.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameDescription.HorizontalFieldOfView">
+            <summary>
+Gets the horizontal field of view for an image frame, in degrees.
+</summary>
+            <value>The horizontal field of view of an image frame, in degrees.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameDescription.Height">
+            <summary>
+Gets the height of an image frame, in pixels.
+</summary>
+            <value>The height of an image frame, in pixels.</value>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameDescription.Width">
+            <summary>
+Gets the width of an image frame, in pixels.
+</summary>
+            <value>The width of an image frame, in pixels.</value>
+        </member>
+        <member name="T:Microsoft.Kinect.FrameDescription">
+            <summary>
+Description of the properties of an image frame.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.DepthFrameReader.AcquireLatestFrame">
+            <summary>
+Acquires the latest available frame.
+</summary>
+            <remarks>
+A given reader will only return each frame once. If no new frames are available since the
+last call to this method, the result will be null.
+</remarks>
+            <returns>Returns a valid frame, or null if no new frames are available.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameReader.IsPaused">
+            <summary>
+Gets or sets the readers pause state.
+</summary>
+            <value>Whether the reader is paused.</value>
+            <remarks>
+Paused readers will deliver no new FrameArrived events and will always return null from
+<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
+not actively in use.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameReader.DepthFrameSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.DepthFrameReader.FrameArrived">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.DepthFrameReader.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.DepthFrameReader">
+            <summary>
+Represents a reader for depth frames. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameArrivedEventArgs.FrameReference">
+            <summary>
+Gets a nonexclusive reference to the frame payload.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.DepthFrameArrivedEventArgs">
+            <summary>
+Represents the arguments for a depth frame reader's FrameArrived event. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.DepthFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+            <remarks>
+Acquired frames hold an exclusive resource and no other frames may be acquired for this
+frame type. Therefore, acquired frames should be disposed as quickly as possible.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameReference.RelativeTime">
+            <summary>
+Returns the unique relative time at which this frame was produced.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.DepthFrameReference">
+            <summary>
+Represents a reference to an actual depth frame.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrameReader.AcquireLatestFrame">
+            <summary>
+Acquires the latest available frame.
+</summary>
+            <remarks>
+A given reader will only return each frame once. If no new frames are available since the
+last call to this method, the result will be null.
+</remarks>
+            <returns>Returns a valid frame, or null if no new frames are available.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrameReader.IsPaused">
+            <summary>
+Gets or sets the readers pause state.
+</summary>
+            <value>Whether the reader is paused.</value>
+            <remarks>
+Paused readers will deliver no new FrameArrived events and will always return null from
+<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
+not actively in use.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrameReader.ColorFrameSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.ColorFrameReader.FrameArrived">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.ColorFrameReader.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.ColorFrameReader">
+            <summary>
+Represents a source of color frames from a KinectSensor. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrameArrivedEventArgs.FrameReference">
+            <summary>
+Gets a nonexclusive reference to the frame payload.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.ColorFrameArrivedEventArgs">
+            <summary>
+Represents the arguments for a color frame reader's FrameArrived event. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrameReference.AcquireFrame">
+            <summary>
+Acquires the frame held by this reference.
+</summary>
+            <remarks>
+Acquired frames hold an exclusive resource and no other frames may be acquired for this
+frame type. Therefore, acquired frames should be disposed as quickly as possible.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrameReference.RelativeTime">
+            <summary>
+Returns the unique relative time at which this frame was produced.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.ColorFrameReference">
+            <summary>
+Represents a reference to an actual color frame. 
+</summary>
+        </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.GetDepthFrameToCameraSpaceTable">
             <summary>
 Generates a table of camera space points. This is a set of the X and Y components of rays with
 unit length in Z. Each pixel's X and Y, when multiplied by its corresponding depth value, yields a
-position in camera space. This table data may be copied into a texture to be used to compute a 3D
-depth visualization using shaders.
+position in camera space.
 </summary>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.GetDepthCameraIntrinsics">
+            <summary>
+Returns the calibration data for the depth camera.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapColorFrameToCameraSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Uses the depth frame data to map the entire frame from color space to camera space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="cameraSpacePoints">The to-be-filled points mapped to camera space.</param>
+            <param name="cameraSpacePointsSize">The size, in bytes, of the to-be-filled points mapped to camera space.</param>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapColorFrameToCameraSpaceUsingIntPtr(System.IntPtr,System.UInt32,Microsoft.Kinect.CameraSpacePoint[])">
+            <summary>
+Uses the depth frame data to map the entire frame from color space to camera space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="cameraSpacePoints">The to-be-filled points mapped to camera space.</param>
         </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapColorFrameToCameraSpace(System.UInt16[],Microsoft.Kinect.CameraSpacePoint[])">
             <summary>
 Uses the depth frame data to map the entire frame from color space to camera space.
 </summary>
             <param name="depthFrameData">The full image data from a depth frame.</param>
-            <param name="cameraSpacePoints">The to-be-filled array of mapped camera points.</param>
+            <param name="cameraSpacePoints">The to-be-filled points mapped to camera space.</param>
             <remarks>The cameraSpacePoints array should be the size of the number of color frame pixels.</remarks>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapColorFrameToDepthSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Uses the depth frame data to map the entire frame from color space to depth space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="depthSpacePoints">The to-be-filled points mapped to depth space.</param>
+            <param name="depthSpacePointsSize">The size, in bytes, of the to-be-filled points mapped to depth space.</param>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapColorFrameToDepthSpaceUsingIntPtr(System.IntPtr,System.UInt32,Microsoft.Kinect.DepthSpacePoint[])">
+            <summary>
+Uses the depth frame data to map the entire frame from color space to depth space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="depthSpacePoints">The to-be-filled points mapped to depth space.</param>
         </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapColorFrameToDepthSpace(System.UInt16[],Microsoft.Kinect.DepthSpacePoint[])">
             <summary>
@@ -74,13 +1723,47 @@ Uses the depth frame data to map the entire frame from color space to depth spac
             <param name="depthSpacePoints">The to-be-filled array of mapped depth points.</param>
             <remarks>The depthSpacePoints array should be the size of the number of color frame pixels.</remarks>
         </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthFrameToColorSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Uses the depth frame data to map the entire frame from depth space to color space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="colorSpacePoints">The to-be-filled points mapped to color space.</param>
+            <param name="colorSpacePointsSize">The size, in bytes, of the to-be-filled points mapped to color space.</param>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthFrameToColorSpaceUsingIntPtr(System.IntPtr,System.UInt32,Microsoft.Kinect.ColorSpacePoint[])">
+            <summary>
+Uses the depth frame data to map the entire frame from depth space to color space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="colorSpacePoints">The to-be-filled points mapped to color space.</param>
+        </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthFrameToColorSpace(System.UInt16[],Microsoft.Kinect.ColorSpacePoint[])">
             <summary>
 Uses the depth frame data to map the entire frame from depth space to color space.
 </summary>
             <param name="depthFrameData">The full image data from a depth frame.</param>
-            <param name="colorSpacePoints">The to-be-filled array of mapped color points</param>
+            <param name="colorSpacePoints">The to-be-filled points mapped to color space.</param>
             <remarks>The colorSpacePoints array should be the size of the number of depth frame pixels.</remarks>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthFrameToCameraSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Uses the depth frame data to map the entire frame from depth space to camera space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="cameraSpacePoints">The to-be-filled points mapped to camera space.</param>
+            <param name="cameraSpacePointsSize">The size, in bytes, of the to-be-filled points mapped to camera space.</param>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthFrameToCameraSpaceUsingIntPtr(System.IntPtr,System.UInt32,Microsoft.Kinect.CameraSpacePoint[])">
+            <summary>
+Uses the depth frame data to map the entire frame from depth space to camera space.
+</summary>
+            <param name="depthFrameData">The full image data from a depth frame.</param>
+            <param name="depthFrameSize">The size, in bytes, of the depth frame data.</param>
+            <param name="cameraSpacePoints">The to-be-filled points mapped to camera space.</param>
         </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthFrameToCameraSpace(System.UInt16[],Microsoft.Kinect.CameraSpacePoint[])">
             <summary>
@@ -88,7 +1771,18 @@ Uses the depth frame data to map the entire frame from depth space to camera spa
 </summary>
             <param name="depthFrameData">The full image data from a depth frame.</param>
             <param name="cameraSpacePoints">The to-be-filled points mapped to camera space.</param>
-            <remarks>The cameraSpacePoints array should be the same size as the depthPoints and depths arrays.</remarks>
+            <remarks>The cameraSpacePoints array should be the same size as the depthFrameData array.</remarks>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthPointsToColorSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Maps points/depths at a specified memory location from depth space to color space.
+</summary>
+            <param name="depthPoints">The points to map from depth space.</param>
+            <param name="depthPointsSize">The size, in bytes, of points to map from depth space.</param>
+            <param name="depths">The depths of the points in depth space.</param>
+            <param name="depthsSize">The size, in bytes, of depths of the points in depth space.</param>
+            <param name="colorPoints">The to-be-filled points mapped to color space.</param>
+            <param name="colorPointsSize">The size, in bytes, of the to-be-filled points mapped to color space.</param>
         </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthPointsToColorSpace(Microsoft.Kinect.DepthSpacePoint[],System.UInt16[],Microsoft.Kinect.ColorSpacePoint[])">
             <summary>
@@ -99,6 +1793,17 @@ Maps an array of points/depths from depth space to color space.
             <param name="colorPoints">The to-be-filled points mapped to color space.</param>
             <remarks>The colorPoints array should be the same size as the depthPoints and depths arrays.</remarks>
         </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthPointsToCameraSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Maps points/depths at a specified memory location from depth space to camera space.
+</summary>
+            <param name="depthPoints">The points to map from depth space.</param>
+            <param name="depthPointsSize">The size, in bytes, of points to map from depth space.</param>
+            <param name="depths">The depths of the points in depth space.</param>
+            <param name="depthsSize">The size, in bytes, of depths of the points in depth space.</param>
+            <param name="cameraPoints">The to-be-filled points mapped to camera space.</param>
+            <param name="cameraPointsSize">The size, in bytes, of the to-be-filled points mapped to camera space.</param>
+        </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapDepthPointsToCameraSpace(Microsoft.Kinect.DepthSpacePoint[],System.UInt16[],Microsoft.Kinect.CameraSpacePoint[])">
             <summary>
 Maps an array of points/depths from depth space to camera space.
@@ -108,6 +1813,15 @@ Maps an array of points/depths from depth space to camera space.
             <param name="cameraPoints">The to-be-filled points mapped to camera space.</param>
             <remarks>The cameraPoints array should be the same size as the depthPoints and depths arrays.</remarks>
         </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapCameraPointsToColorSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Maps points at a specified memory location from camera space to color space.
+</summary>
+            <param name="cameraPoints">The points to map from camera space.</param>
+            <param name="cameraPointsSize">The size, in bytes, of points to map from camera space.</param>
+            <param name="colorPoints">The to-be-filled points mapped to color space.</param>
+            <param name="colorPointsSize">The size, in bytes, of the to-be-filled points mapped to color space.</param>
+        </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapCameraPointsToColorSpace(Microsoft.Kinect.CameraSpacePoint[],Microsoft.Kinect.ColorSpacePoint[])">
             <summary>
 Maps an array of points from camera space to color space.
@@ -115,6 +1829,15 @@ Maps an array of points from camera space to color space.
             <param name="cameraPoints">The points to map from camera space.</param>
             <param name="colorPoints">The to-be-filled points mapped to color space.</param>
             <remarks>The colorPoints array should be the same size as the cameraPoints array.</remarks>
+        </member>
+        <member name="M:Microsoft.Kinect.CoordinateMapper.MapCameraPointsToDepthSpaceUsingIntPtr(System.IntPtr,System.UInt32,System.IntPtr,System.UInt32)">
+            <summary>
+Maps points at a specified memory location from camera space to depth space.
+</summary>
+            <param name="cameraPoints">The points to map from camera space.</param>
+            <param name="cameraPointsSize">The size, in bytes, of points to map from camera space.</param>
+            <param name="depthPoints">The to-be-filled points mapped to depth space.</param>
+            <param name="depthPointsSize">The size, in bytes, of the to-be-filled points mapped to depth space.</param>
         </member>
         <member name="M:Microsoft.Kinect.CoordinateMapper.MapCameraPointsToDepthSpace(Microsoft.Kinect.CameraSpacePoint[],Microsoft.Kinect.DepthSpacePoint[])">
             <summary>
@@ -169,87 +1892,162 @@ Represents the mapper that provides translation services from one type of point 
 Represents the arguments for a coordinate mapping's CoordinateMappingChanged event.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.BodyFrameSource.OpenReader">
+        <member name="M:Microsoft.Kinect.ColorFrameSource.CreateFrameDescription(Microsoft.Kinect.ColorImageFormat)">
+            <summary>
+Creates a frame description object for the specified format.
+</summary>
+            <param name="format">The image format for which to create the FrameDescription object.</param>
+            <returns>A new FrameDescription object for the ColorFrame of the requested format.</returns>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrameSource.OpenReader">
             <summary>
 Creates and returns a new reader object. This will activate the source if not already active.
 </summary>
             <returns>Returns the newly opened frame reader.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.BodyFrameSource.IsActive">
-            <summary>
-Gets whether this source has any active (unpaused) readers.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrameSource.KinectSensor">
-            <summary>
-Gets the KinectSensor with which this source is associated.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.BodyFrameSource.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.BodyFrameReader.AcquireLatestFrame">
-            <summary>
-Acquires the latest available frame.
-</summary>
-            <remarks>
-A given reader will only return each frame once. If no new frames are available since the
-last call to this method, the result will be null.
-</remarks>
-            <returns>Returns a valid frame, or null if no new frames are available.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrameReader.IsPaused">
-            <summary>
-Gets or sets the readers pause state.
-</summary>
-            <value>Whether the reader is paused.</value>
-            <remarks>
-Paused readers will deliver no new FrameArrived events and will always return null from
-<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
-not actively in use.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrameReader.BodyFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.BodyFrameReader.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrameArrivedEventArgs.FrameReference">
-            <summary>
-Gets a nonexclusive reference to the frame payload.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.LongExposureInfraredFrameSource.OpenReader">
-            <summary>
-Creates and returns a new reader object. This will activate the source if not already active.
-</summary>
-            <returns>Returns the newly opened frame reader.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameSource.FrameDescription">
+        <member name="P:Microsoft.Kinect.ColorFrameSource.FrameDescription">
             <summary>
 Gets the frame description for the default (raw) color format.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameSource.IsActive">
+        <member name="P:Microsoft.Kinect.ColorFrameSource.IsActive">
             <summary>
 Gets whether this source has any active (unpaused) readers.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameSource.KinectSensor">
+        <member name="P:Microsoft.Kinect.ColorFrameSource.KinectSensor">
             <summary>
 Gets the KinectSensor with which this source is associated.
 </summary>
         </member>
-        <member name="E:Microsoft.Kinect.LongExposureInfraredFrameSource.PropertyChanged">
+        <member name="E:Microsoft.Kinect.ColorFrameSource.FrameCaptured">
+            <summary>
+Event that fires whenever a color frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.ColorFrameSource.PropertyChanged">
             <summary>
 Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.ColorFrameSource">
+            <summary>
+Represents a source of color frames from a KinectSensor. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorCameraSettings.Gamma">
+            <summary>
+Gets the gamma exponent.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorCameraSettings.Gain">
+            <summary>
+Gets the gain.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorCameraSettings.FrameInterval">
+            <summary>
+Gets the interval beween the beginning of one exposure and the next.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorCameraSettings.ExposureTime">
+            <summary>
+Gets the exposure time.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.ColorCameraSettings">
+            <summary>
+Represents the settings of the color camera.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrame.CopyConvertedFrameDataToIntPtr(System.IntPtr,System.UInt32,Microsoft.Kinect.ColorImageFormat)">
+            <summary>
+Converts the raw format into the requested format and copies the data into the memory location provided.  
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrame.CopyConvertedFrameDataToArray(System.Byte[],Microsoft.Kinect.ColorImageFormat)">
+            <summary>
+Converts the raw format into the requested format and copies the data into the array provided.  
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrame.CopyRawFrameDataToIntPtr(System.IntPtr,System.UInt32)">
+            <summary>
+Copies raw frame data into the memory location provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrame.CopyRawFrameDataToArray(System.Byte[])">
+            <summary>
+Copies the raw frame data into the array provided
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrame.LockRawImageBuffer">
+            <summary>
+Gives an app access to the underlying buffer used by the system to store this frame's data. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.ColorFrame.CreateFrameDescription(Microsoft.Kinect.ColorImageFormat)">
+            <summary>
+Creates a FrameDescription object for the ColorFrame of the requested format. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrame.RawColorImageFormat">
+            <summary>
+Gets the pixel format for the underlying color image.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrame.ColorCameraSettings">
+            <summary>
+Gets a description of the color camera settings for this frame.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrame.FrameDescription">
+            <summary>
+Gets the frame description for the underlying image format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrame.ColorFrameSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.ColorFrame.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.ColorFrame">
+            <summary>
+Represents a color frame from the ColorFrameSource of a KinectSensor. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrame.SubFrames">
+            <summary>
+Gets the list of the subframes available in this frame.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrame.AudioBeam">
+            <summary>
+Gets the AudioBeam object associated with this audio beam frame.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrame.AudioSource">
+            <summary>
+Gets the audio source for this frame.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrame.Duration">
+            <summary>
+Gets the duration of the frame.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrame.RelativeTimeStart">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBeamFrame">
+            <summary>
+Represents an audio beam frame.
 </summary>
         </member>
         <member name="M:Microsoft.Kinect.InteractionFrameReader.AcquireLatestFrame">
@@ -302,255 +2100,6 @@ frame type. Therefore, acquired frames should be disposed as quickly as possible
 Returns the unique relative time at which this frame was produced.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.InteractionFrameSource.OpenReader">
-            <summary>
-Creates and returns a new reader object. This will activate the source if not already active.
-</summary>
-            <returns>Returns the newly opened frame reader.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.InteractionFrameSource.IsActive">
-            <summary>
-Gets whether this source has any active (unpaused) readers.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.InteractionFrameSource.KinectSensor">
-            <summary>
-Gets the KinectSensor with which this source is associated.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.InteractionFrameSource.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.ColorFrameReader.AcquireLatestFrame">
-            <summary>
-Acquires the latest available frame.
-</summary>
-            <remarks>
-A given reader will only return each frame once. If no new frames are available since the
-last call to this method, the result will be null.
-</remarks>
-            <returns>Returns a valid frame, or null if no new frames are available.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrameReader.IsPaused">
-            <summary>
-Gets or sets the readers pause state.
-</summary>
-            <value>Whether the reader is paused.</value>
-            <remarks>
-Paused readers will deliver no new FrameArrived events and will always return null from
-<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
-not actively in use.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrameReader.ColorFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.ColorFrameReader.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrameArrivedEventArgs.FrameReference">
-            <summary>
-Gets a nonexclusive reference to the frame payload.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.KinectSensor.OpenMultiSourceFrameReader(Microsoft.Kinect.FrameSourceTypes)">
-            <summary>
-Creates a new frame reader for correlating multiple frame sources.
-</summary>
-            <param name="enabledFrameSourceTypes">Flags specifying which frame types to enable.</param>
-            <returns>A new reader enabled for the specified source types.</returns>
-        </member>
-        <member name="M:Microsoft.Kinect.KinectSensor.Close">
-            <summary>
-Closes the KinectSensor.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.KinectSensor.Open">
-            <summary>
-Opens the KinectSensor.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.KinectSensor.IsAvailable">
-            <summary>
-Gets whether the KinectSensor is capable of delivering frame data.
-</summary>
-            <value>The availability of the KinectSensor.</value>
-        </member>
-        <member name="P:Microsoft.Kinect.KinectSensor.IsOpen">
-            <summary>
-Gets whether the KinectSensor is open.
-</summary>
-            <value>The open state of the KinectSensor.</value>
-        </member>
-        <member name="E:Microsoft.Kinect.KinectSensor.IsAvailableChanged">
-            <summary>
-Occurs when the availability of the KinectSensor changes.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.KinectSensor.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="T:Microsoft.Kinect.KinectSensor">
-            <summary>
-Represents a KinectSensor device.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.IsAvailableChangedEventArgs.IsAvailable">
-            <summary>
-Gets whether or not the KinectSensor is available.
-</summary>
-            <value>The availability of the KinectSensor.</value>
-        </member>
-        <member name="T:Microsoft.Kinect.IsAvailableChangedEventArgs">
-            <summary>
-Represents the arguments for a KinectSensor's IsAvailableChanged event.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.InfraredFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-            <remarks>
-Acquired frames hold an exclusive resource and no other frames may be acquired for this
-frame type. Therefore, acquired frames should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.InfraredFrameReference.RelativeTime">
-            <summary>
-Returns the unique relative time at which this frame was produced.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.ColorFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-            <remarks>
-Acquired frames hold an exclusive resource and no other frames may be acquired for this
-frame type. Therefore, acquired frames should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrameReference.RelativeTime">
-            <summary>
-Returns the unique relative time at which this frame was produced.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.BodyFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-            <remarks>
-Acquired frames hold an exclusive resource and no other frames may be acquired for this
-frame type. Therefore, acquired frames should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrameReference.RelativeTime">
-            <summary>
-Returns the unique relative time at which this frame was produced.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.ColorFrameSource.CreateFrameDescription(Microsoft.Kinect.ColorImageFormat)">
-            <summary>
-Creates a frame description object for the specified format.
-</summary>
-            <param name="format">The image format for which to create the FrameDescription object.</param>
-            <returns>A new FrameDescription object for the ColorFrame of the requested format.</returns>
-        </member>
-        <member name="M:Microsoft.Kinect.ColorFrameSource.OpenReader">
-            <summary>
-Creates and returns a new reader object. This will activate the source if not already active.
-</summary>
-            <returns>Returns the newly opened frame reader.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrameSource.FrameDescription">
-            <summary>
-Gets the frame description for the default (raw) color format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrameSource.IsActive">
-            <summary>
-Gets whether this source has any active (unpaused) readers.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrameSource.KinectSensor">
-            <summary>
-Gets the KinectSensor with which this source is associated.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.ColorFrameSource.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="T:Microsoft.Kinect.ColorCameraSettings">
-            <summary>
-Represents the settings of the color camera.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrame.RawColorImageFormat">
-            <summary>
-Gets the pixel format for the underlying color image.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrame.ColorCameraSettings">
-            <summary>
-Gets a description of the color camera settings for this frame.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrame.FrameDescription">
-            <summary>
-Gets the frame description for the underlying image format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrame.ColorFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.ColorFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
-        <member name="T:Microsoft.Kinect.Body">
-            <summary>
-Represents a single body.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.BodyFrame.GetAndRefreshBodyData(System.Collections.Generic.IList`1{Microsoft.Kinect.Body})">
-            <summary>
-Updates a given array of bodies with the data from this frame.
-</summary>
-            <param name="bodies">The array of bodies to update.</param>
-            <remarks>
-The given body array must be initialized to size <c>BodyCount</c>, but may have null
-elements. For each element that is not null, the existing body will be updated with new
-data. Otherwise a new body object will be created. For performance, callers should cache
-the resulting array for use with future frames.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrame.BodyCount">
-            <summary>
-Gets the number of bodies which will be returned by <c>GetAndRefreshBodyData</c>.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrame.BodyFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
         <member name="P:Microsoft.Kinect.InteractionFrame.InteractionFrameSource">
             <summary>
 Gets the source for this frame type.
@@ -574,549 +2123,6 @@ Acquires the list of pointers entered this frame.
         <member name="P:Microsoft.Kinect.InteractionFrame.Pointers">
             <summary>
 Acquires the list of pointers this frame.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.BodyIndexFrameReader.AcquireLatestFrame">
-            <summary>
-Acquires the latest available frame.
-</summary>
-            <remarks>
-A given reader will only return each frame once. If no new frames are available since the
-last call to this method, the result will be null.
-</remarks>
-            <returns>Returns a valid frame, or null if no new frames are available.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrameReader.IsPaused">
-            <summary>
-Gets or sets the readers pause state.
-</summary>
-            <value>Whether the reader is paused.</value>
-            <remarks>
-Paused readers will deliver no new FrameArrived events and will always return null from
-<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
-not actively in use.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrameReader.BodyIndexFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.BodyIndexFrameReader.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrameArrivedEventArgs.FrameReference">
-            <summary>
-Gets a nonexclusive reference to the frame payload.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.BodyIndexFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-            <remarks>
-Acquired frames hold an exclusive resource and no other frames may be acquired for this
-frame type. Therefore, acquired frames should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrameReference.RelativeTime">
-            <summary>
-Returns the unique relative time at which this frame was produced.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.BodyIndexFrameSource.OpenReader">
-            <summary>
-Creates and returns a new reader object. This will activate the source if not already active.
-</summary>
-            <returns>Returns the newly opened frame reader.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrameSource.FrameDescription">
-            <summary>
-Gets the frame description for the default (raw) color format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrameSource.IsActive">
-            <summary>
-Gets whether this source has any active (unpaused) readers.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrameSource.KinectSensor">
-            <summary>
-Gets the KinectSensor with which this source is associated.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.BodyIndexFrameSource.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrame.FrameDescription">
-            <summary>
-Gets the frame description for the underlying image format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrame.BodyIndexFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.BodyIndexFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.MultiSourceFrameReader.AcquireLatestFrame">
-            <summary>
-Acquires the latest available frame.
-</summary>
-            <remarks>
-A given reader will only return each frame once. If no new frames are available since the
-last call to this method, the result will be null.
-</remarks>
-            <returns>Returns a valid frame, or null if no new frames are available.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.MultiSourceFrameReader.IsPaused">
-            <summary>
-Gets or sets the readers pause state.
-</summary>
-            <value>Whether the reader is paused.</value>
-            <remarks>
-Paused readers will deliver no new FrameArrived events and will always return null from
-<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
-not actively in use.
-</remarks>
-        </member>
-        <member name="E:Microsoft.Kinect.MultiSourceFrameReader.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="T:Microsoft.Kinect.MultiSourceFrameReader">
-            <summary>
-Represents a reader for multi source frames.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.MultiSourceFrameArrivedEventArgs.FrameReference">
-            <summary>
-Gets a nonexclusive reference to the frame payload.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.MultiSourceFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-            <remarks>
-Acquired frames hold an exclusive resource and no other frames may be acquired for this
-frame type. Therefore, acquired frames should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="T:Microsoft.Kinect.MultiSourceFrame">
-            <summary>
-Represents a multi source frame from the KinectSensor.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.FrameDescription.BytesPerPixel">
-            <summary>
-Gets the bytes per pixel of the data for an image frame.
-</summary>
-            <value>The bytes per pixel of the data for an image frame.</value>
-        </member>
-        <member name="P:Microsoft.Kinect.FrameDescription.LengthInPixels">
-            <summary>
-Gets the length in pixels of the data for an image frame.
-</summary>
-            <value>The length in pixels of the data for an image frame.</value>
-        </member>
-        <member name="P:Microsoft.Kinect.FrameDescription.DiagonalFieldOfView">
-            <summary>
-Gets the diagonal field of view for an image frame.
-</summary>
-            <value>The diagonal field of view of an image frame.</value>
-        </member>
-        <member name="P:Microsoft.Kinect.FrameDescription.VerticalFieldOfView">
-            <summary>
-Gets the vertical field of view for an image frame.
-</summary>
-            <value>The vertical field of view of an image frame.</value>
-        </member>
-        <member name="P:Microsoft.Kinect.FrameDescription.HorizontalFieldOfView">
-            <summary>
-Gets the horizontal field of view for an image frame.
-</summary>
-            <value>The horizontal field of view of an image frame.</value>
-        </member>
-        <member name="P:Microsoft.Kinect.FrameDescription.Height">
-            <summary>
-Gets the height of an image frame.
-</summary>
-            <value>The height of an image frame.</value>
-        </member>
-        <member name="P:Microsoft.Kinect.FrameDescription.Width">
-            <summary>
-Gets the width of an image frame.
-</summary>
-            <value>The width of an image frame.</value>
-        </member>
-        <member name="T:Microsoft.Kinect.FrameDescription">
-            <summary>
-Description of the properties of an image frame.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.DepthFrameReader.AcquireLatestFrame">
-            <summary>
-Acquires the latest available frame.
-</summary>
-            <remarks>
-A given reader will only return each frame once. If no new frames are available since the
-last call to this method, the result will be null.
-</remarks>
-            <returns>Returns a valid frame, or null if no new frames are available.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrameReader.IsPaused">
-            <summary>
-Gets or sets the readers pause state.
-</summary>
-            <value>Whether the reader is paused.</value>
-            <remarks>
-Paused readers will deliver no new FrameArrived events and will always return null from
-<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
-not actively in use.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrameReader.DepthFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.DepthFrameReader.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrameArrivedEventArgs.FrameReference">
-            <summary>
-Gets a nonexclusive reference to the frame payload.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.DepthFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-            <remarks>
-Acquired frames hold an exclusive resource and no other frames may be acquired for this
-frame type. Therefore, acquired frames should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrameReference.RelativeTime">
-            <summary>
-Returns the unique relative time at which this frame was produced.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrame.FrameDescription">
-            <summary>
-Gets the frame description for the underlying image format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrame.DepthFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.DepthFrameSource.OpenReader">
-            <summary>
-Creates and returns a new reader object. This will activate the source if not already active.
-</summary>
-            <returns>Returns the newly opened frame reader.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrameSource.FrameDescription">
-            <summary>
-Gets the frame description for the default (raw) color format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrameSource.IsActive">
-            <summary>
-Gets whether this source has any active (unpaused) readers.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.DepthFrameSource.KinectSensor">
-            <summary>
-Gets the KinectSensor with which this source is associated.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.DepthFrameSource.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.AudioBeamFrameReader.AcquireLatestBeamFrames">
-            <summary>
-Acquires the list of the latest available beam frames.
-</summary>
-            <remarks>
-A given reader will only return each list once. If no new beam frames are available since the
-last call to this method, the result will be null.
-</remarks>
-            <returns>Returns a valid list of beam frames, or null if no new beam frames are available.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrameReader.IsPaused">
-            <summary>
-Gets or sets the readers pause state.
-</summary>
-            <value>Whether the reader is paused.</value>
-            <remarks>
-Paused readers will deliver no new FrameArrived events and will always return null from
-<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
-not actively in use.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrameReader.AudioSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.AudioBeamFrameReader.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrameArrivedEventArgs.FrameReference">
-            <summary>
-Gets a nonexclusive reference to the frame payload.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.AudioBeamFrameReference.AcquireBeamFrames">
-            <summary>
-Acquires the beam frame list held by this reference.
-</summary>
-            <remarks>
-Acquired list holds an exclusive resource and no other list may be acquired
-Therefore acquired list should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrameReference.RelativeTime">
-            <summary>
-Returns the unique relative time at which this frame was produced.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.InfraredFrameSource.OpenReader">
-            <summary>
-Creates and returns a new reader object. This will activate the source if not already active.
-</summary>
-            <returns>Returns the newly opened frame reader.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.InfraredFrameSource.FrameDescription">
-            <summary>
-Gets the frame description for the default (raw) color format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.InfraredFrameSource.IsActive">
-            <summary>
-Gets whether this source has any active (unpaused) readers.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.InfraredFrameSource.KinectSensor">
-            <summary>
-Gets the KinectSensor with which this source is associated.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.InfraredFrameSource.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.InfraredFrame.FrameDescription">
-            <summary>
-Gets the frame description for the underlying image format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.InfraredFrame.InfraredFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.InfraredFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
-        <member name="F:Microsoft.Kinect.PropertyChangedAdapter._handler">
-            <summary>
-The wrapped handler.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.OnPropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
-            <summary>
-Called to trigger the property changed event handler. 
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.#ctor(System.ComponentModel.PropertyChangedEventHandler)">
-            <summary>
-Initializes a new instance of the PropertyChangedAdapter class with the given handler. 
-</summary>
-            <param name="handler">PropertyChangedEventHandler to wrap.</param>
-        </member>
-        <member name="M:Microsoft.Kinect.LongExposureInfraredFrameReader.AcquireLatestFrame">
-            <summary>
-Acquires the latest available frame.
-</summary>
-            <remarks>
-A given reader will only return each frame once. If no new frames are available since the
-last call to this method, the result will be null.
-</remarks>
-            <returns>Returns a valid frame, or null if no new frames are available.</returns>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameReader.IsPaused">
-            <summary>
-Gets or sets the readers pause state.
-</summary>
-            <value>Whether the reader is paused.</value>
-            <remarks>
-Paused readers will deliver no new FrameArrived events and will always return null from
-<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
-not actively in use.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameReader.LongExposureInfraredFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="E:Microsoft.Kinect.LongExposureInfraredFrameReader.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameArrivedEventArgs.FrameReference">
-            <summary>
-Gets a nonexclusive reference to the frame payload.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.LongExposureInfraredFrameReference.AcquireFrame">
-            <summary>
-Acquires the frame held by this reference.
-</summary>
-            <remarks>
-Acquired frames hold an exclusive resource and no other frames may be acquired for this
-frame type. Therefore, acquired frames should be disposed as quickly as possible.
-</remarks>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrameReference.RelativeTime">
-            <summary>
-Returns the unique relative time at which this frame was produced.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrame.FrameDescription">
-            <summary>
-Gets the frame description for the underlying image format.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrame.LongExposureInfraredFrameSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.LongExposureInfraredFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the frame was captured.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBodyCorrelation.BodyTrackingId">
-            <summary>
-Gets the unique body tracking id associated with this subframe
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeam.AudioSource">
-            <summary>
-Gets the source for this frame type.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeam.RelativeTime">
-            <summary>
-Gets the unique relative time at which the subframe was captured.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeam.AudioBeamMode">
-            <summary>
-Gets and sets the mode of the audo beam
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeam.BeamAngleConfidence">
-            <summary>
-Gets the beam angle confidence (in the range [0, 1]).
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeam.BeamAngle">
-            <summary>
-Gets and sets the angle (in radian) of the audio beam.
-</summary>
-            <remarks>
-In order to set the beam angle, you first have to
-set the AudioBeamMode to manual. Otherwise
-it will throw [TBD].
-TODO: Validate correct exception and test for it
-Beam angle is in radians, in the range [-pi,+pi].
-If you try to set a value outside this range,
-it will throw [TBD].
-TODO: Validate correct exception and test for it.
-      The native API should return E_INVALIDARG for out of range angle.
-</remarks>
-        </member>
-        <member name="E:Microsoft.Kinect.AudioBeam.PropertyChanged">
-            <summary>
-Event that fires whenever a property changes.
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.AudioBeamSubFrame.CopyFrameDataToArray(System.Byte[])">
-            <summary>
-Copy the audio buffer (32-bit float, mono, 16khz sample rate)
-</summary>
-        </member>
-        <member name="M:Microsoft.Kinect.AudioBeamSubFrame.LockAudioBuffer">
-            <summary>
-Locks and returns the audio buffer (32-bit float, mono, 16khz sample rate). The caller
-must dispose of the buffer when done.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.AudioBodyCorrelations">
-            <summary>
-Acquires the list of the AudioBodyCorrelation objects available in ths subframe
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.RelativeTime">
-            <summary>
-Gets the unique relative time at which the subframe was captured.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.AudioBeamMode">
-            <summary>
-Gets the mode of the audio beam
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.BeamAngleConfidence">
-            <summary>
-Gets the beam angle confidence (in the range [0, 1]).
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.BeamAngle">
-            <summary>
-Gets the angle (in radian) of the audio beam.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.Duration">
-            <summary>
-Gets the duration of the subframe.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamSubFrame.FrameLengthInBytes">
-            <summary>
-Gets the size in bytes of the audio subframe buffer.
 </summary>
         </member>
         <member name="M:Microsoft.Kinect.AudioSource.OpenReader">
@@ -1160,9 +2166,240 @@ Gets whether this source has any active (unpaused) readers.
 Gets the KinectSensor with which this source is associated.
 </summary>
         </member>
+        <member name="E:Microsoft.Kinect.AudioSource.FrameCaptured">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
         <member name="E:Microsoft.Kinect.AudioSource.PropertyChanged">
             <summary>
 Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioSource">
+            <summary>
+Represents an audio frame source. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.AudioBeam.OpenInputStream">
+            <summary>
+Opens the input stream.
+</summary>
+            <returns>The input stream.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeam.AudioSource">
+            <summary>
+Gets the audio source.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeam.RelativeTime">
+            <summary>
+Gets the unique relative time at which the subframe was captured.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeam.AudioBeamMode">
+            <summary>
+Gets or sets the audio beam mode.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeam.BeamAngleConfidence">
+            <summary>
+Gets the confidence in the beam angle; the range is [0.0, 1.0], where 1 is the highest possible confidence.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeam.BeamAngle">
+            <summary>
+Gets or sets the angle (in radians) of the audio beam, which is the direction that the sensor is actively listening.
+</summary>
+            <remarks>
+In order to set the beam angle, you first have to
+set the AudioBeamMode to manual. Otherwise
+it will throw [TBD].
+TODO: Validate correct exception and test for it
+Beam angle is in radians, in the range [-pi,+pi].
+If you try to set a value outside this range,
+it will throw [TBD].
+TODO: Validate correct exception and test for it.
+      The native API should return E_INVALIDARG for out of range angle.
+</remarks>
+        </member>
+        <member name="E:Microsoft.Kinect.AudioBeam.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBeam">
+            <summary>
+Represents an audio beam. 
+</summary>
+        </member>
+        <member name="F:Microsoft.Kinect.PropertyChangedAdapter._handler">
+            <summary>
+The wrapped handler.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.OnPropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
+            <summary>
+Called to trigger the property changed event handler. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.PropertyChangedAdapter.#ctor(System.ComponentModel.PropertyChangedEventHandler)">
+            <summary>
+Initializes a new instance of the PropertyChangedAdapter class with the given handler. 
+</summary>
+            <param name="handler">PropertyChangedEventHandler to wrap.</param>
+        </member>
+        <member name="M:Microsoft.Kinect.AudioBeamFrameReader.AcquireLatestBeamFrames">
+            <summary>
+Acquires the list of the latest available beam frames.
+</summary>
+            <remarks>
+A given reader will only return each list once. If no new beam frames are available since the
+last call to this method, the result will be null.
+</remarks>
+            <returns>Returns a valid list of beam frames, or null if no new beam frames are available.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrameReader.IsPaused">
+            <summary>
+Gets or sets the readers pause state.
+</summary>
+            <value>Whether the reader is paused.</value>
+            <remarks>
+Paused readers will deliver no new FrameArrived events and will always return null from
+<c>AcquireLatestFrame</c>. For best performance, readers should be disposed or paused when
+not actively in use.
+</remarks>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrameReader.AudioSource">
+            <summary>
+Gets the source for this frame type.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.AudioBeamFrameReader.FrameArrived">
+            <summary>
+Event that fires whenever a frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.AudioBeamFrameReader.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBeamFrameReader">
+            <summary>
+Represents an audio beam frame reader. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrameArrivedEventArgs.FrameReference">
+            <summary>
+Gets a nonexclusive reference to the frame payload.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBeamFrameArrivedEventArgs">
+            <summary>
+Arguments for the audio related FrameReady events. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.AudioBeamFrameReference.AcquireBeamFrames">
+            <summary>
+Acquires the beam frame list held by this reference.
+</summary>
+            <remarks>
+Acquired list holds an exclusive resource and no other list may be acquired.
+Therefore acquired list should be disposed as quickly as possible.
+</remarks>
+            <returns>Returns a valid list of beam frames, or null if no frames are acquired.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrameReference.RelativeTime">
+            <summary>
+Returns the unique relative time at which this frame was produced.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBeamFrameReference">
+            <summary>
+Represents an audio frame reference. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.AudioBeamFrameList.GetEnumerator">
+            <summary>
+Returns an enumerator that iterates through the AudioBeamFrameList.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrameList.default(System.Int32)">
+            <summary>
+Gets or sets the element at the specified index.
+</summary>
+            <param name="index">The zero-based index of the element to get.</param>
+        </member>
+        <member name="P:Microsoft.Kinect.AudioBeamFrameList.Count">
+            <summary>
+Gets the number of elements actually contained in the AudioBeamFrameList.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.AudioBeamFrameList">
+            <summary>
+Represents a list of audio beam frames. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.DepthFrameSource.OpenReader">
+            <summary>
+Creates and returns a new reader object. This will activate the source if not already active.
+</summary>
+            <returns>Returns the newly opened frame reader.</returns>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameSource.DepthMaxReliableDistance">
+            <summary>
+Gets the maximum reliable depth of the depth frames, in millimeters.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameSource.DepthMinReliableDistance">
+            <summary>
+Gets the minimum reliable depth of the depth frames, in millimeters.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameSource.FrameDescription">
+            <summary>
+Gets the frame description for the format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameSource.IsActive">
+            <summary>
+Gets whether this source has any active (unpaused) readers.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrameSource.KinectSensor">
+            <summary>
+Gets the KinectSensor with which this source is associated.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.DepthFrameSource.FrameCaptured">
+            <summary>
+Event that fires whenever a depth frame is captured.
+</summary>
+        </member>
+        <member name="E:Microsoft.Kinect.DepthFrameSource.PropertyChanged">
+            <summary>
+Event that fires whenever a property changes.
+</summary>
+        </member>
+        <member name="T:Microsoft.Kinect.DepthFrameSource">
+            <summary>
+Represents a source of depth frames from a KinectSensor. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameCapturedEventArgs.RelativeTime">
+            <summary>
+Gets the unique relative time at which the frame was captured.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameCapturedEventArgs.FrameStatus">
+            <summary>
+Gets the status of the captured frame.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.FrameCapturedEventArgs.FrameType">
+            <summary>
+Gets the type of the captured frame. 
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.FrameCapturedEventArgs">
@@ -1171,74 +2408,111 @@ Represents the arguments for a frame source's FrameCaptured event.
 </summary>
         </member>
         <member name="T:KinectStreamType">
-            <copyright file="AudioSource.h" company="Microsoft Corporation">
-   Copyright (c) Microsoft Corporation. All rights reserved.
-</copyright>
-            <copyright file="InfraredFrameSource.h" company="Microsoft Corporation">
-   Copyright (c) Microsoft Corporation. All rights reserved.
-</copyright>
             <copyright file="DepthFrameSource.h" company="Microsoft Corporation">
    Copyright (c) Microsoft Corporation. All rights reserved.
 </copyright>
-            <copyright file="BodyIndexFrameSource.h" company="Microsoft Corporation">
+            <copyright file="AudioSource.h" company="Microsoft Corporation">
    Copyright (c) Microsoft Corporation. All rights reserved.
 </copyright>
             <copyright file="ColorFrameSource.h" company="Microsoft Corporation">
    Copyright (c) Microsoft Corporation. All rights reserved.
 </copyright>
+            <copyright file="CoordinateMappingChangedDelegate.h" company="Microsoft Corporation">
+   Copyright (c) Microsoft Corporation. All rights reserved.
+</copyright>
             <copyright file="InteractionFrameSource.h" company="Microsoft">
+   Copyright (c) Microsoft Corporation. All rights reserved.
+</copyright>
+            <copyright file="BodyIndexFrameSource.h" company="Microsoft Corporation">
    Copyright (c) Microsoft Corporation. All rights reserved.
 </copyright>
             <copyright file="LongExposureInfraredFrameSource.h" company="Microsoft Corporation">
    Copyright (c) Microsoft Corporation. All rights reserved.
 </copyright>
-            <copyright file="CoordinateMappingChangedDelegate.h" company="Microsoft Corporation">
-   Copyright (c) Microsoft Corporation. All rights reserved.
-</copyright>
             <copyright file="BodyFrameSource.h" company="Microsoft Corporation">
    Copyright (c) Microsoft Corporation. All rights reserved.
 </copyright>
+            <copyright file="InfraredFrameSource.h" company="Microsoft Corporation">
+   Copyright (c) Microsoft Corporation. All rights reserved.
+</copyright>
         </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrame.SubFrames">
+        <member name="P:Microsoft.Kinect.KinectBuffer.UnderlyingBuffer">
             <summary>
-Gets the list of the subframes available in this frame.
+Memory location of the underlying buffer.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrame.AudioBeam">
+        <member name="P:Microsoft.Kinect.KinectBuffer.Size">
             <summary>
-Gets the AudioBeam object associated with this audio beam frame.
+Size, in bytes, of the underlying buffer.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrame.AudioSource">
+        <member name="T:Microsoft.Kinect.KinectBuffer">
+            <summary>
+Represents a buffer of Kinect data.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.DepthFrame.CopyFrameDataToIntPtr(System.IntPtr,System.UInt32)">
+            <summary>
+Copies the depth frame data into the memory location provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.DepthFrame.CopyFrameDataToArray(System.UInt16[])">
+            <summary>
+Copies the depth frame data into the array provided. 
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.DepthFrame.LockImageBuffer">
+            <summary>
+Gives an app access to the underlying buffer used by the system to store this frame's data. 
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrame.DepthMaxReliableDistance">
+            <summary>
+Gets the maximum reliable depth of the depth frame, in millimeters.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrame.DepthMinReliableDistance">
+            <summary>
+Gets the minimum reliable depth of the depth frame, in millimeters.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrame.FrameDescription">
+            <summary>
+Gets the frame description for the underlying image format.
+</summary>
+        </member>
+        <member name="P:Microsoft.Kinect.DepthFrame.DepthFrameSource">
             <summary>
 Gets the source for this frame type.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrame.Duration">
-            <summary>
-Gets the duration of the frame.
-</summary>
-        </member>
-        <member name="P:Microsoft.Kinect.AudioBeamFrame.RelativeTimeStart">
+        <member name="P:Microsoft.Kinect.DepthFrame.RelativeTime">
             <summary>
 Gets the unique relative time at which the frame was captured.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.RectF.op_Inequality(System.ValueType!Microsoft.Kinect.RectF!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.RectF!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="T:Microsoft.Kinect.DepthFrame">
+            <summary>
+Represents a frame where each pixel represents the distance (in millimeters) of the closest object.
+</summary>
+        </member>
+        <member name="M:Microsoft.Kinect.RectF.op_Inequality(Microsoft.Kinect.RectF,Microsoft.Kinect.RectF)">
             <summary>
 Indicates whether the values of two specified RectF objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified RectF objects are not equal; otherwise, false.</returns>
         </member>
-        <member name="M:Microsoft.Kinect.RectF.op_Equality(System.ValueType!Microsoft.Kinect.RectF!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.RectF!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.RectF.op_Equality(Microsoft.Kinect.RectF,Microsoft.Kinect.RectF)">
             <summary>
 Indicates whether the values of two specified RectF objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified RectF objects are equal; otherwise, false.</returns>
         </member>
-        <member name="M:Microsoft.Kinect.RectF.Equals(System.ValueType!Microsoft.Kinect.RectF!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.RectF.Equals(Microsoft.Kinect.RectF)">
             <summary>
 Returns a value indicating whether this instance and a specified RectF object represent the same value.
 </summary>
@@ -1270,12 +2544,12 @@ The width of the of the rect.
         </member>
         <member name="F:Microsoft.Kinect.RectF.Y">
             <summary>
-The upper left hand Y coordinate of the rect.
+The Y coordinate of the upper left hand corner of the rect.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.RectF.X">
             <summary>
-The upper left hand X coordinate of the rect.
+The X coordinate of the upper left hand corner of the rect.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.RectF">
@@ -1289,6 +2563,7 @@ Indicates whether the values of two specified KinectManipulationVelocities objec
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified KinectManipulationVelocities objects are not equal; otherwise, false.</returns>
         </member>
         <member name="M:Microsoft.Kinect.Input.KinectManipulationVelocities.op_Equality(System.ValueType!Microsoft.Kinect.Input.KinectManipulationVelocities!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.Input.KinectManipulationVelocities!System.Runtime.CompilerServices.IsBoxed)">
             <summary>
@@ -1296,6 +2571,7 @@ Indicates whether the values of two specified KinectManipulationVelocities objec
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified KinectManipulationVelocities objects are equal; otherwise, false.</returns>
         </member>
         <member name="M:Microsoft.Kinect.Input.KinectManipulationVelocities.Equals(System.ValueType!Microsoft.Kinect.Input.KinectManipulationVelocities!System.Runtime.CompilerServices.IsBoxed)">
             <summary>
@@ -1313,17 +2589,17 @@ Returns the hash code for this instance.
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectManipulationVelocities.Expansion">
             <summary>
-The expansion component of the velocity.
+The rate at which the manipulation is resized in device-independent units (1/96th inch per unit) per millisecond.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectManipulationVelocities.Angular">
             <summary>
-The angular component of the velocity.
+The angular component of the velocity in degrees per millisecond.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectManipulationVelocities.Linear">
             <summary>
-The linear component of the velocity.
+The linear component of the velocity in device-independent units (1/96th inch per unit) per millisecond.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.Input.KinectManipulationVelocities">
@@ -1337,6 +2613,7 @@ Indicates whether the values of two specified KinectManipulationDelta objects ar
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified KinectManipulationDelta objects are not equal; otherwise, false.</returns>
         </member>
         <member name="M:Microsoft.Kinect.Input.KinectManipulationDelta.op_Equality(System.ValueType!Microsoft.Kinect.Input.KinectManipulationDelta!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.Input.KinectManipulationDelta!System.Runtime.CompilerServices.IsBoxed)">
             <summary>
@@ -1344,6 +2621,7 @@ Indicates whether the values of two specified KinectManipulationDelta objects ar
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified KinectManipulationDelta objects are equal; otherwise, false.</returns>
         </member>
         <member name="M:Microsoft.Kinect.Input.KinectManipulationDelta.Equals(System.ValueType!Microsoft.Kinect.Input.KinectManipulationDelta!System.Runtime.CompilerServices.IsBoxed)">
             <summary>
@@ -1366,22 +2644,22 @@ Constructor.
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectManipulationDelta.Expansion">
             <summary>
-Manipulation expansion delta.
+This will always be 0.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectManipulationDelta.Rotation">
             <summary>
-Manipulation rotation delta.
+The change in angle of rotation, in degrees.  This will always be 0.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectManipulationDelta.Scale">
             <summary>
-Manipulation scale delta.
+The multiplicative change in zoom factor.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectManipulationDelta.Translation">
             <summary>
-Manipulation translation delta.
+The change in x and y screen coordinates, in the core window coordinate space (normalized [0,1]).
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.Input.KinectManipulationDelta.Identity">
@@ -1394,21 +2672,23 @@ The identity KinectManipulationDelta object.
 Represents the delta during Kinect manipulation.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.PointF.op_Inequality(System.ValueType!Microsoft.Kinect.PointF!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.PointF!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.PointF.op_Inequality(Microsoft.Kinect.PointF,Microsoft.Kinect.PointF)">
             <summary>
 Indicates whether the values of two specified PointF objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified PointF objects are not equal; otherwise, false.</returns>
         </member>
-        <member name="M:Microsoft.Kinect.PointF.op_Equality(System.ValueType!Microsoft.Kinect.PointF!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.PointF!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.PointF.op_Equality(Microsoft.Kinect.PointF,Microsoft.Kinect.PointF)">
             <summary>
 Indicates whether the values of two specified PointF objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified PointF objects are equal; otherwise, false.</returns>
         </member>
-        <member name="M:Microsoft.Kinect.PointF.Equals(System.ValueType!Microsoft.Kinect.PointF!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.PointF.Equals(Microsoft.Kinect.PointF)">
             <summary>
 Returns a value indicating whether this instance and a specified PointF object represent the same value.
 </summary>
@@ -1428,12 +2708,12 @@ Returns the hash code for this instance.
 </summary>
             <returns> The hash code for this instance.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.PointF.Y">
+        <member name="F:Microsoft.Kinect.PointF.Y">
             <summary>
 The Y coordinate of the point.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.PointF.X">
+        <member name="F:Microsoft.Kinect.PointF.X">
             <summary>
 The X coordinate of the point.
 </summary>
@@ -1443,21 +2723,21 @@ The X coordinate of the point.
 Represents a 2D point.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.JointOrientation.op_Inequality(System.ValueType!Microsoft.Kinect.JointOrientation!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.Joint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.JointOrientation.op_Inequality(Microsoft.Kinect.JointOrientation,Microsoft.Kinect.Joint)">
             <summary>
 Indicates whether the values of two specified JointOrientation objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.JointOrientation.op_Equality(System.ValueType!Microsoft.Kinect.JointOrientation!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.JointOrientation!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.JointOrientation.op_Equality(Microsoft.Kinect.JointOrientation,Microsoft.Kinect.JointOrientation)">
             <summary>
 Indicates whether the values of two specified JointOrientation objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.JointOrientation.Equals(System.ValueType!Microsoft.Kinect.JointOrientation!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.JointOrientation.Equals(Microsoft.Kinect.JointOrientation)">
             <summary>
 Returns a value indicating whether this instance and a specified JointOrientation object represent the same value.
 </summary>
@@ -1477,12 +2757,12 @@ Returns the hash code for this instance.
 </summary>
             <returns> The hash code for this instance.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.JointOrientation.Orientation">
+        <member name="F:Microsoft.Kinect.JointOrientation.Orientation">
             <summary>
 The orientation of the joint.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.JointOrientation.JointType">
+        <member name="F:Microsoft.Kinect.JointOrientation.JointType">
             <summary>
 The type of joint.
 </summary>
@@ -1492,21 +2772,21 @@ The type of joint.
 Represents the orientation of a joint of a body.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.Joint.op_Inequality(System.ValueType!Microsoft.Kinect.Joint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.Joint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.Joint.op_Inequality(Microsoft.Kinect.Joint,Microsoft.Kinect.Joint)">
             <summary>
 Indicates whether the values of two specified Joint objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.Joint.op_Equality(System.ValueType!Microsoft.Kinect.Joint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.Joint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.Joint.op_Equality(Microsoft.Kinect.Joint,Microsoft.Kinect.Joint)">
             <summary>
 Indicates whether the values of two specified Joint objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.Joint.Equals(System.ValueType!Microsoft.Kinect.Joint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.Joint.Equals(Microsoft.Kinect.Joint)">
             <summary>
 Returns a value indicating whether this instance and a specified Joint object represent
 the same value.
@@ -1527,17 +2807,17 @@ Returns the hash code for this instance.
 </summary>
             <returns> The hash code for this instance.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.Joint.TrackingState">
+        <member name="F:Microsoft.Kinect.Joint.TrackingState">
             <summary>
 The tracking state of the joint.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.Joint.Position">
+        <member name="F:Microsoft.Kinect.Joint.Position">
             <summary>
 The position of the joint in camera space.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.Joint.JointType">
+        <member name="F:Microsoft.Kinect.Joint.JointType">
             <summary>
 The type of joint.
 </summary>
@@ -1547,21 +2827,21 @@ The type of joint.
 Represents the position of a joint of a body.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.DepthSpacePoint.op_Inequality(System.ValueType!Microsoft.Kinect.DepthSpacePoint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.DepthSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.DepthSpacePoint.op_Inequality(Microsoft.Kinect.DepthSpacePoint,Microsoft.Kinect.DepthSpacePoint)">
             <summary>
 Indicates whether the values of two specified DepthSpacePoint objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.DepthSpacePoint.op_Equality(System.ValueType!Microsoft.Kinect.DepthSpacePoint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.DepthSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.DepthSpacePoint.op_Equality(Microsoft.Kinect.DepthSpacePoint,Microsoft.Kinect.DepthSpacePoint)">
             <summary>
 Indicates whether the values of two specified DepthSpacePoint objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.DepthSpacePoint.Equals(System.ValueType!Microsoft.Kinect.DepthSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.DepthSpacePoint.Equals(Microsoft.Kinect.DepthSpacePoint)">
             <summary>
 Returns a value indicating whether this instance and a specified DepthSpacePoint object represent the same value.
 </summary>
@@ -1581,14 +2861,14 @@ Returns the hash code for this instance.
 </summary>
             <returns> The hash code for this instance.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.DepthSpacePoint.Y">
+        <member name="F:Microsoft.Kinect.DepthSpacePoint.Y">
             <summary>
-The Y coordinate of the point.
+The Y coordinate of the point, in pixels.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.DepthSpacePoint.X">
+        <member name="F:Microsoft.Kinect.DepthSpacePoint.X">
             <summary>
-The X coordinate of the point.
+The X coordinate of the point, in pixels.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.DepthSpacePoint">
@@ -1598,37 +2878,37 @@ Represents a 2D point in depth space.
         </member>
         <member name="P:Microsoft.Kinect.CameraIntrinsics.RadialDistortionSixthOrder">
             <summary>
-The sixth order radial distortion parameter of the camera
+The sixth order radial distortion parameter of the camera.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.CameraIntrinsics.RadialDistortionFourthOrder">
             <summary>
-The fourth order radial distortion parameter of the camera
+The fourth order radial distortion parameter of the camera.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.CameraIntrinsics.RadialDistortionSecondOrder">
             <summary>
-The second order radial distortion parameter of the camera
+The second order radial distortion parameter of the camera.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.CameraIntrinsics.PrincipalPointY">
             <summary>
-The Principal Point of the Camera in Pixels, in the Y dimension
+The principal point of the camera in the Y dimension, in pixels.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.CameraIntrinsics.PrincipalPointX">
             <summary>
-The Principal Point of the Camera in Pixels, in the X dimension
+The principal point of the camera in the X dimension, in pixels.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.CameraIntrinsics.FocalLengthY">
             <summary>
-The Y Focal Length of the Camera in Pixels
+The Y focal length of the camera, in pixels.
 </summary>
         </member>
         <member name="P:Microsoft.Kinect.CameraIntrinsics.FocalLengthX">
             <summary>
-The X Focal Length of the Camera in Pixels
+The X focal length of the camera, in pixels.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.CameraIntrinsics">
@@ -1636,21 +2916,23 @@ The X Focal Length of the Camera in Pixels
 Represents the calibration data for the depth camera
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.Vector4.op_Inequality(System.ValueType!Microsoft.Kinect.Vector4!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.Vector4!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.Vector4.op_Inequality(Microsoft.Kinect.Vector4,Microsoft.Kinect.Vector4)">
             <summary>
 Indicates whether the values of two specified Vector4 objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified Vector4 objects are not equal; otherwise, false.</returns>
         </member>
-        <member name="M:Microsoft.Kinect.Vector4.op_Equality(System.ValueType!Microsoft.Kinect.Vector4!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.Vector4!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.Vector4.op_Equality(Microsoft.Kinect.Vector4,Microsoft.Kinect.Vector4)">
             <summary>
 Indicates whether the values of two specified Vector4 objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
+            <returns>true if the two specified Vector4 objects are equal; otherwise, false.</returns>
         </member>
-        <member name="M:Microsoft.Kinect.Vector4.Equals(System.ValueType!Microsoft.Kinect.Vector4!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.Vector4.Equals(Microsoft.Kinect.Vector4)">
             <summary>
 Returns a value indicating whether this instance and a specified Vector4 object represent the same value.
 </summary>
@@ -1670,22 +2952,22 @@ Returns the hash code for this instance.
 </summary>
             <returns> The hash code for this instance.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.Vector4.W">
+        <member name="F:Microsoft.Kinect.Vector4.W">
             <summary>
 The W coordinate of the vector.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.Vector4.Z">
+        <member name="F:Microsoft.Kinect.Vector4.Z">
             <summary>
 The Z coordinate of the vector.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.Vector4.Y">
+        <member name="F:Microsoft.Kinect.Vector4.Y">
             <summary>
 The Y coordinate of the vector.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.Vector4.X">
+        <member name="F:Microsoft.Kinect.Vector4.X">
             <summary>
 The X coordinate of the vector.
 </summary>
@@ -1695,21 +2977,21 @@ The X coordinate of the vector.
 Represents a 4D vector.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.ColorSpacePoint.op_Inequality(System.ValueType!Microsoft.Kinect.ColorSpacePoint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.ColorSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.ColorSpacePoint.op_Inequality(Microsoft.Kinect.ColorSpacePoint,Microsoft.Kinect.ColorSpacePoint)">
             <summary>
 Indicates whether the values of two specified ColorSpacePoint objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.ColorSpacePoint.op_Equality(System.ValueType!Microsoft.Kinect.ColorSpacePoint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.ColorSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.ColorSpacePoint.op_Equality(Microsoft.Kinect.ColorSpacePoint,Microsoft.Kinect.ColorSpacePoint)">
             <summary>
 Indicates whether the values of two specified ColorSpacePoint objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.ColorSpacePoint.Equals(System.ValueType!Microsoft.Kinect.ColorSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.ColorSpacePoint.Equals(Microsoft.Kinect.ColorSpacePoint)">
             <summary>
 Returns a value indicating whether this instance and a specified ColorSpacePoint object represent the same value.
 </summary>
@@ -1729,14 +3011,14 @@ Returns the hash code for this instance.
 </summary>
             <returns> The hash code for this instance.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.ColorSpacePoint.Y">
+        <member name="F:Microsoft.Kinect.ColorSpacePoint.Y">
             <summary>
-The Y coordinate of the point.
+The Y coordinate of the point, in pixels.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.ColorSpacePoint.X">
+        <member name="F:Microsoft.Kinect.ColorSpacePoint.X">
             <summary>
-The X coordinate of the point.
+The X coordinate of the point, in pixels.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.ColorSpacePoint">
@@ -1744,21 +3026,21 @@ The X coordinate of the point.
 Represents a 2D point in color space.
 </summary>
         </member>
-        <member name="M:Microsoft.Kinect.CameraSpacePoint.op_Inequality(System.ValueType!Microsoft.Kinect.CameraSpacePoint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.CameraSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.CameraSpacePoint.op_Inequality(Microsoft.Kinect.CameraSpacePoint,Microsoft.Kinect.CameraSpacePoint)">
             <summary>
 Indicates whether the values of two specified CameraSpacePoint objects are not equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.CameraSpacePoint.op_Equality(System.ValueType!Microsoft.Kinect.CameraSpacePoint!System.Runtime.CompilerServices.IsBoxed,System.ValueType!Microsoft.Kinect.CameraSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.CameraSpacePoint.op_Equality(Microsoft.Kinect.CameraSpacePoint,Microsoft.Kinect.CameraSpacePoint)">
             <summary>
 Indicates whether the values of two specified CameraSpacePoint objects are equal.
 </summary>
             <param name="a">The first object to compare.</param>
             <param name="b">The second object to compare.</param>
         </member>
-        <member name="M:Microsoft.Kinect.CameraSpacePoint.Equals(System.ValueType!Microsoft.Kinect.CameraSpacePoint!System.Runtime.CompilerServices.IsBoxed)">
+        <member name="M:Microsoft.Kinect.CameraSpacePoint.Equals(Microsoft.Kinect.CameraSpacePoint)">
             <summary>
 Returns a value indicating whether this instance and a specified CameraSpacePoint object represent the same value.
 </summary>
@@ -1778,49 +3060,49 @@ Returns the hash code for this instance.
 </summary>
             <returns> The hash code for this instance.</returns>
         </member>
-        <member name="P:Microsoft.Kinect.CameraSpacePoint.Z">
+        <member name="F:Microsoft.Kinect.CameraSpacePoint.Z">
             <summary>
-The Z coordinate of the point.
+The Z coordinate of the point, in meters.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.CameraSpacePoint.Y">
+        <member name="F:Microsoft.Kinect.CameraSpacePoint.Y">
             <summary>
-The Y coordinate of the point.
+The Y coordinate of the point, in meters.
 </summary>
         </member>
-        <member name="P:Microsoft.Kinect.CameraSpacePoint.X">
+        <member name="F:Microsoft.Kinect.CameraSpacePoint.X">
             <summary>
-The X coordinate of the point.
+The X coordinate of the point, in meters.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.CameraSpacePoint">
             <summary>
-Represents a 3D point in camera space.
+Represents a 3D point in camera space.  The origin point (0,0,0) of the coordinate system is the camera position.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.TrackingState">
             <summary>
-The state of tracking a body or body's attribute.
+Specifies the state of tracking a body or body's attribute.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.TrackingState.Tracked">
             <summary>
-Tracked.
+The joint data is being tracked and the data can be trusted.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.TrackingState.Inferred">
             <summary>
-Inferred.
+The joint data is inferred and confidence in the position data is lower than if it were Tracked.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.TrackingState.NotTracked">
             <summary>
-Not tracked.
+The joint data is not tracked and no data is known about this joint.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.TrackingConfidence">
             <summary>
-The confidence level of a body's tracked attribute.
+Specifies the confidence level of a body's tracked attribute.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.TrackingConfidence.High">
@@ -1865,7 +3147,7 @@ No engagement mode.
         </member>
         <member name="T:Microsoft.Kinect.Input.PointerDeviceType">
             <summary>
-Pointer device type enum.
+Specifies the pointer device type.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.PointerDeviceType.Kinect">
@@ -1890,142 +3172,150 @@ Touch pointer device type.
         </member>
         <member name="T:Microsoft.Kinect.Input.KinectInteractionMode">
             <summary>
-Kinect interaction mode enum.
+Gesture interaction modes, which determine how gestures are handled. 
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectInteractionMode.Media">
             <summary>
-Media interaction mode.
+Kinect interaction is tailored to media playback scenarios.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectInteractionMode.Off">
             <summary>
-No interaction mode.
+Disables processing of engagement.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectInteractionMode.Normal">
             <summary>
-Normal interaction mode.
+Enables default engagement criteria.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.Input.KinectHoldingState">
             <summary>
-Kinect holding state enum.
+Specifies the state of the Holding event. 
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectHoldingState.Canceled">
             <summary>
-Canceled holding state.
+An additional contact is detected, a subsequent gesture (such as a slide) is 
+detected, or the CompleteGesture method is called.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectHoldingState.Completed">
             <summary>
-Completed holding state.
+The single contact is lifted.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectHoldingState.Started">
             <summary>
-Started holding state.
+A single contact has been detected and a time threshold is crossed without the
+contact being lifted, another contact detected, or another gesture started.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.Input.HandType">
             <summary>
-Kinect hand type enum.
+Enumerates the ways in which a hand can be identified.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.HandType.RIGHT">
             <summary>
-Right hand type.
+The user's right hand.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.HandType.LEFT">
             <summary>
-Left hand type.
+The user's left hand.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.HandType.NONE">
             <summary>
-No hand type.
+The hand is not identified as a right or left hand.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.Input.KinectGestureSettings">
             <summary>
-The types of Kinect gesture settings.
+Specifies the interactions that are supported by an Kinect for Windows application.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.KinectHold">
             <summary>
-Hold setting.
+Enable support for the press and hold gesture through Kinect gestures. The Holding event is raised if a time threshold is crossed before the user moves the hand cursor away from the UI element. 
+This gesture can be used to display a context menu.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.ManipulationTranslateInertia">
             <summary>
-Inertia translation manipulation setting.
+Enable support for scaling inertia after the pinch or stretch gesture (through pointer input) is complete. The ManipulationInertiaStarting event is raised if inertia is enabled.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.ManipulationScale">
             <summary>
-Scale manipulation setting.
+Enable support for the zoom gesture through pointer input.
+These gestures can be used for optical or semantic zoom and resizing an object. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.ManipulationTranslateRailsY">
             <summary>
-Y rails translation manipulation setting.
+Enable support for the slide gesture through pointer input, on the vertical axis using rails (guides). The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.
+This gesture can be used for rearranging objects.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.ManipulationTranslateRailsX">
             <summary>
-X rails translation manipulation setting.
+Enable support for the slide gesture through pointer input, on the horizontal axis using rails (guides). The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.
+This gesture can be used for rearranging objects.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.ManipulationTranslateY">
             <summary>
-Y translation manipulation setting.
+Enable support for the slide gesture through pointer input, on the vertical axis. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.
+This gesture can be used for rearranging objects.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.ManipulationTranslateX">
             <summary>
-X translation manipulation setting.
+Enable support for the 1:1 panning manipulation through pointer input, on the horizontal axis. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.
+This gesture can be used for rearranging objects.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.Tap">
             <summary>
-Tap setting.
+Enable support for the tap gesture.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectGestureSettings.None">
             <summary>
-No setting.
+Disable support for gestures and manipulations.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.Input.KinectEngagementMode">
             <summary>
-Kinect engagement mode enum.
+Enumerates the modes in which engaged users can be tracked. 
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectEngagementMode.ManualTwoPerson">
             <summary>
-Two person manual engagement mode.
+The app will specify two engaged people.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectEngagementMode.ManualOnePerson">
             <summary>
-One person manual engagement mode.
+The app will specify one engaged person.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectEngagementMode.SystemTwoPerson">
             <summary>
-Two person system engagement mode.
+The system automatically detects two engaged people.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectEngagementMode.SystemOnePerson">
             <summary>
-One person system engagement mode.
+The system automatically detects one engaged person.
 </summary>
         </member>
         <member name="F:Microsoft.Kinect.Input.KinectEngagementMode.None">
             <summary>
-No engagement mode.
+No engagement tracking.
 </summary>
         </member>
         <member name="T:Microsoft.Kinect.KinectCapabilities">
