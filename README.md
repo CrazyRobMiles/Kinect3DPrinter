@@ -41,9 +41,9 @@ The program in this repository compiles and runs on Windows 10 with Microsoft Vi
 
 ### USB sensor not recognised
 
-The Kinect Sensor is picky about its USB connection. Make sure that the connection is USB 3.0 and that it is directly to the PC (i.e. not via a hub). Open the SDK Browser V2.0 in the 
+The software will crash if the Kinect is not connected properly when the program starts. The Kinect Sensor can be picky about its USB connection. Make sure that the connection is USB 3.0 and that it is directly to the PC (i.e. not via a hub). 
 
-The software will crash if the Kinect is not connected properly when the program starts. You can test your Kinect connection using the configuration tester app. You can start this from the SDK BRowser in the Kinect Software program group in the Start Menu:
+You can test your Kinect connection using the configuration tester app. You can start this from the SDK BRowser in the Kinect Software program group in the Start Menu:
 
 ![Kinect Software Program Group in Windows Start](images/Kinect%20Software%20Browser.png)
 
