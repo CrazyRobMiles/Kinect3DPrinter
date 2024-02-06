@@ -15,6 +15,10 @@ using System.Windows.Shapes;
 
 using Microsoft.Kinect;
 using System.IO;
+using System.Windows.Media.Media3D;
+using System.Diagnostics;
+using System.Windows.Controls.Primitives;
+
 
 // Kinect 3D Printer
 // Takes 3D pictures and makes them into STL files for printing on a 3D printer
@@ -39,8 +43,15 @@ namespace Kinect3DCamera
         DateTime lastSnapshotTime = DateTime.Now;
         string filepath;
 
+        private Point previousMousePosition;
+        private Transform3DGroup cameraTransform = new Transform3DGroup();
+        private double totalYaw = 0.0;
+        private double totalPitch = 0.0;
+
         private bool Setup()
         {
+            // Assuming "myCamera" is your camera defined in XAML
+            camera.Transform = cameraTransform;
             filepath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             sensor = KinectSensor.GetDefault();
             sensor.IsAvailableChanged += sensor_IsAvailableChanged;
@@ -373,6 +384,127 @@ namespace Kinect3DCamera
             }
         }
 
+        public delegate double PlotHeightCalc (double x, double y);
+
+        /// <summary>
+        /// Plots a function into a grid
+        /// </summary>
+        /// <param name="heightCalc">Delegate function to calculate the height value</param>
+        /// <param name="minX">minimum value of X in the grid</param>
+        /// <param name="maxX">maximum value of X in the grid</param>
+        /// <param name="minY">minimum value of Y in the grid</param>
+        /// <param name="maxY">maximum value of Y in the grid</param>
+        /// <param name="plotWidth">width of the grid</param>
+        /// <param name="plotDepth">depth of the grid</param>
+        /// <param name="baseHeight">height of the base of the grid</param>
+        /// <returns>grid of height values</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public double[,] FuncPlotter  (PlotHeightCalc heightCalc,
+            double minX, double maxX,
+            double minY, double maxY,
+            int plotWidth, int plotDepth,
+            double baseHeight)
+        {
+            double[,] grid = new double[plotWidth, plotDepth];
+            double xRange = maxX - minX;
+            double yRange = maxY - minY;
+            double xStep = xRange/ plotWidth;
+            double yStep = yRange/ plotDepth;
+
+            for(int x=0; x < plotWidth; x++)
+            {
+                double xInput = minX + (x * xStep);
+                for (int y=0; y<plotDepth; y++)
+                {
+                    double yInput = minY + (y * yStep);
+                    double blockHeight = heightCalc(xInput, yInput) + baseHeight;
+                    if(blockHeight < 0)
+                    {
+                        throw new ArgumentException("Column height less than 0");
+                    }
+                    grid[x, y] = blockHeight;
+                }
+            }
+
+            return grid;
+        }
+
+        /// <summary>
+        /// Creates a column for each height vlaue in the grid. Produces a list of triangles for an STL file. 
+        /// The grid must be at least 2 wide and 2 high.
+        /// </summary>
+        /// <param name="grid">3d grid of height values - none of which are less than 0</param>
+        /// <param name="x">x origin of mesh (added to each vertex x)</param>
+        /// <param name="y">y origin of mesh (added to each vertex  y)</param>
+        /// <param name="z">z origin of mesh (added to each vertex z)</param>
+        /// <param name="outputWidth">width of the output</param>
+        /// <param name="outputDepth">depth of the output </param>
+        /// <param name="heightScale"></param>
+        /// <returns>List of triangles for an STL file</returns>
+        public List<Triangle> ColumnPlot(double[,] grid,
+            double x, double y,double z, 
+            double outputWidth, double outputDepth, double heightScale)
+        {
+            List<Triangle> triangles = new List<Triangle>();
+
+            int width = grid.GetLength(0);
+            int depth = grid.GetLength(1);
+
+            double blockWidth = outputWidth / width;
+            double blockDepth = outputDepth / depth;
+
+            double zPos = z;
+
+            for (int xp = 0; xp < width-1; xp++)
+            {
+                double xPos = xp * blockWidth;
+
+                for (int yp = 0; yp < depth-1; yp++)
+                {
+                    double yPos = yp * blockDepth;
+
+                    // Get the vertices for the bottom and the top of the column
+
+                    Vertex b1 = new Vertex(xPos, yPos, zPos);
+                    Vertex b2 = new Vertex(xPos + blockWidth, yPos, zPos);
+                    Vertex b3 = new Vertex(xPos + blockWidth, yPos + blockDepth, zPos);
+                    Vertex b4 = new Vertex(xPos, yPos + blockDepth, zPos);
+
+                    Vertex t1 = new Vertex(xPos, yPos, zPos + (grid[xp,yp] * heightScale));
+                    Vertex t2 = new Vertex(xPos + blockWidth, yPos, zPos + (grid[xp + 1, yp] * heightScale));
+                    Vertex t3 = new Vertex(xPos + blockWidth, yPos + blockDepth, zPos + (grid[xp + 1, yp + 1] * heightScale));
+                    Vertex t4 = new Vertex(xPos, yPos + blockDepth, zPos + (grid[xp, yp + 1] * heightScale));
+
+                    // Bottom of the column
+                    triangles.Add(new Triangle(b1, b2, b3));
+                    triangles.Add(new Triangle(b1, b3, b4));
+
+
+                    // Top of the column
+                    triangles.Add(new Triangle(t1, t2, t3));
+                    triangles.Add(new Triangle(t1, t3, t4));
+
+
+                    // Left hand side of the column
+                    triangles.Add(new Triangle(b1, t1, b4));
+                    triangles.Add(new Triangle(t1, t4, b4));
+
+                    // Right hand side of the column
+                    triangles.Add(new Triangle(b2, t2, b3));
+                    triangles.Add(new Triangle(t2, t3, b3));
+
+                    //Front side of the column
+                    triangles.Add(new Triangle(b1, b2, t2));
+                    triangles.Add(new Triangle(t2, t1, b1));
+
+                    //Back side of the column
+                    triangles.Add(new Triangle(b4, b3, t3));
+                   triangles.Add(new Triangle(t3, t4, b4));
+                }
+            }
+            return triangles;
+        }
+
         /// <summary>
         /// Takes a 2D array of double values and creates a mesh of triangles for a 3D plot of the data
         /// </summary>
@@ -412,10 +544,10 @@ namespace Kinect3DCamera
             double bx = 0;
             double by = 0;
 
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < width-1; x++)
             {
                 by = 0;
-                for (int y = 0; y < depth; y++)
+                for (int y = 0; y < depth-1; y++)
                 {
                     // Make the first triangle
                     Vertex v1 = new Vertex(bx, by, 0);
@@ -532,7 +664,7 @@ namespace Kinect3DCamera
             {
                 for (int y = 0; y < depth; y++)
                 {
-                    grid[x, y] = image[imagePos]+baseOffset;
+                    grid[x, y] = image[imagePos] + baseOffset;
                     imagePos++;
                 }
             }
@@ -781,5 +913,182 @@ September 2014
             NumberOfAveragesTextBlock.Text = "Number of averages : " + Math.Round(NumberOfAverageSlider.Value).ToString();
             SetNoOfAverages((int)Math.Round(NumberOfAverageSlider.Value));
         }
+
+
+private MeshGeometry3D CreateTerrainMesh(double[,] heightData)
+    {
+        int width = heightData.GetLength(0);
+        int height = heightData.GetLength(1);
+        MeshGeometry3D mesh = new MeshGeometry3D();
+
+        // Create vertices
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                mesh.Positions.Add(new Point3D(x, y, heightData[x, y]));
+            }
+        }
+
+        // Create triangles
+        for (int x = 0; x < width - 1; x++)
+        {
+            for (int y = 0; y < height - 1; y++)
+            {
+                int baseIndex = x * height + y;
+
+                // Triangle 1
+                mesh.TriangleIndices.Add(baseIndex);
+                mesh.TriangleIndices.Add(baseIndex + height);
+                mesh.TriangleIndices.Add(baseIndex + 1);
+
+                // Triangle 2
+                mesh.TriangleIndices.Add(baseIndex + 1);
+                mesh.TriangleIndices.Add(baseIndex + height);
+                mesh.TriangleIndices.Add(baseIndex + height + 1);
+            }
+        }
+
+        return mesh;
+    }
+
+    class SurfaceLayer
+        {
+            int no;
+            public double[,] surface;
+
+            public SurfaceLayer(int width, int depth, int no)
+            {
+                this.no = no;
+                this.surface = new double[width, depth];
+            }
+        }
+
+
+        private void NewTestButton_Click(object sender, RoutedEventArgs e)
+        {
+            double[,] mesh = new double [,] { { 1, 1, 2 }, { 3, 3, 4 } };
+
+            double range = Math.PI;
+
+            mesh = FuncPlotter(delegate (double x, double y)
+            {
+                    return Math.Sin(x)  + 0.5;
+            },
+            -range,range,-range,range,200,200,20);
+
+            List<Triangle> triangles = ColumnPlot(mesh, 0, 0, 0, 200, 200, 50);
+
+            WriteTriangles(triangles, "triTry1.stl");
+
+        }
+
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            int width = 100;
+            int depth = 100;
+            int noOfLayers = 4;
+            int spotWidth = 2;
+            int spotDepth = 2;
+
+            width = (int)(width / spotWidth) * spotWidth;
+            depth = (int)(depth / spotDepth) * spotDepth;
+
+            SurfaceLayer[] layers = new SurfaceLayer[noOfLayers];
+
+            for(int i = 0;i< noOfLayers; i++)
+            {
+                layers[i] = new SurfaceLayer(width, depth, i);
+            }
+
+            int layerCount = 0;
+
+            for (int i = 0; i < width; i+=spotWidth)
+            {
+                for (int j = 0; j < depth; j+=spotDepth)
+                {
+                    for (int iSpot = 0; iSpot < spotWidth; iSpot++)
+                    {
+                        for (int jSpot = 0; jSpot < spotDepth; jSpot++)
+                        {
+                            int iv = i + iSpot;
+                            int jv = j + jSpot;
+                            layers[layerCount].surface[iv, jv] = 5;
+                        }
+                    }
+                    layerCount++;
+                    if(layerCount == noOfLayers)
+                    {
+                        layerCount = 0;
+                    }
+                }
+            }
+
+            for(int layer = 0; layer < layers.Length; layer++)
+            {
+                var stlMesh = SolidPlot(layers[layer].surface, 100, 2, 20);
+
+                string name = "sine" + layer + ".stl";
+
+                WriteTriangles(stlMesh, name);
+
+            }
+
+            MeshGeometry3D terrainMesh = CreateTerrainMesh(layers[0].surface);
+            GeometryModel3D geometryModel = new GeometryModel3D();
+            geometryModel.Geometry = terrainMesh;
+            geometryModel.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Gray));
+
+            ModelVisual3D modelVisual = new ModelVisual3D();
+            modelVisual.Content = geometryModel;
+
+            // Assuming you have a Viewport3D named "viewport" in your XAML
+            viewport.Children.Add(modelVisual);
+
+        }
+
+        private void Viewport3D_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point currentPosition = e.GetPosition(viewport);
+
+                // Calculate the change in position
+                double deltaX = currentPosition.X - previousMousePosition.X;
+                double deltaY = currentPosition.Y - previousMousePosition.Y;
+
+                // Update total rotation angles
+                totalYaw -= deltaX * 0.1; // Adjust these factors to control rotation sensitivity
+                totalPitch -= deltaY * 0.1;
+
+                // Apply rotation to the camera
+                cameraTransform.Children.Clear();
+                cameraTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), totalYaw)));
+                cameraTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), totalPitch)));
+
+                previousMousePosition = currentPosition;
+            }
+        }
+
+        private void Viewport3D_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            previousMousePosition = e.GetPosition(viewport);
+        }
+
+        private void Viewport3D_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // Adjust this value as needed for zoom speed
+            double zoomFactor = 0.1;
+
+            // Zoom in or out
+            if (e.Delta > 0)
+                camera.Position = new Point3D(camera.Position.X * (1 - zoomFactor), camera.Position.Y * (1 - zoomFactor), camera.Position.Z * (1 - zoomFactor));
+            else
+                camera.Position = new Point3D(camera.Position.X * (1 + zoomFactor), camera.Position.Y * (1 + zoomFactor), camera.Position.Z * (1 + zoomFactor));
+        }
+
+
+
     }
 }

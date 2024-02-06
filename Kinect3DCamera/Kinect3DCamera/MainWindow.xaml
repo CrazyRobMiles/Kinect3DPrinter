@@ -21,6 +21,32 @@
             <Button Margin="10,10,10,10" Content="Take Selfie" Click="SelfieButton_Click"></Button>
             <TextBox Margin="10,10,10,10" Name="SelfieTimeTextBox" Text="5" Width="50"></TextBox>
             <Button Margin="10,10,10,10" Content="Help" Click="HelpButton_Click"></Button>
+            <Button Margin="10,10,10,10" Content="Test" Click="TestButton_Click"></Button>
+            <Button Margin="10,10,10,10" Content="New Test" Click="NewTestButton_Click"></Button>
         </StackPanel>
+        <Viewport3D Name="viewport" Width="500" Height="500" MouseDown="Viewport3D_MouseDown" 
+            MouseMove="Viewport3D_MouseMove" 
+            MouseWheel="Viewport3D_MouseWheel">
+            <!-- Camera -->
+            <Viewport3D.Camera>
+                <PerspectiveCamera x:Name="camera" Position="50,50,200" LookDirection="0,0,-200" UpDirection="0,1,0" />
+            </Viewport3D.Camera>
+
+            <!-- ModelVisual3D for the light source -->
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="White" Direction="-1,-1,-1" />
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+
+            <ModelVisual3D>
+                <ModelVisual3D.Content>
+                    <DirectionalLight Color="blue" Direction="-5,-5,-1" />
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+
+            <!-- ModelVisual3D for the geometry -->
+        </Viewport3D>
+
     </StackPanel>
 </Window>
