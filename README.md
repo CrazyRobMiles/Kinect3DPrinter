@@ -1,23 +1,24 @@
 # Kinect3DPrinter
 You know that bit at the end of Star Wars 2/5 when Han Solo gets frozen into Carbonite?
 
-Well, you can use this program to do the same to yourself.
+![program screenshot](images/Carbonite%20Family.jpg)
 
+Well, you can use this program to do the same to yourself. 
 It takes the depth image from a Kinect 2 sensor and creates an STL object for 3D printing.
 ## User Interface
 
 ![program screenshot](images/ScreenShot.PNG)
 
-You can set the near and far planes to clip the depth image and also the width and height of the object that is to be produced.
+You can set the near and far planes to clip the depth image and also the width and height of the object that is to be produced. You can also adjust the gain on the 3D image. Press the Take Picture button to create a 3D printable image you can preview in the right hand panel. Navigate the 3D preview by clicking on the image and dragging your mouse, or using the mouse scroll wheel to zoom in and out. 
 
-You can also control the amount of averaging that is performed on the frames. Increasing averaging can bring out more detail (particularly if the subject is close to the sensor) but the display will update more slowly and the subject must keep still.
+You can control the amount of averaging that is performed on the frames. Increasing averaging can bring out more detail (particularly if the subject is close to the sensor) but the display will update more slowly and the subject must keep still.
 ## Program Output
+
+Enter a filename and click "Save STL File" to save an stl file. The files are stored in your documents 
 
 The STL file is stored in your Documents folder.
 
-It can be loaded into any slicing program that you fancy (I use Cura) and used to produce interesting prints.
-
-![Sample selfie](images/Carbonite.PNG)
+It can be loaded into any slicing program that you fancy (I use Cura) and used to produce interesting prints. If your printer can print in multiple colours you can set it to change the filament once it has printed the carbonite base. For best results print at 0.1mm layer height. You might also like to experiment with printing the block vertically to get even higher resolution. 
 
 ## Getting Started
 
@@ -27,21 +28,21 @@ You'll need a Kinect 2 sensor (Not the Kinect 1 which was for the Xbox 360). You
 
 ### Kinect Adapter
 
-You'll also need a Kinect 2 PC adapter. Search for "Kinect PC adapter" on your favourite auction site. There is a Microsoft branded kit but there are also clones of this. 
+You'll also need a Kinect 2 PC adapter. Search for "Kinect PC adapter" on your favourite auction site. There is a Microsoft branded version but there are also clones of this. 
 
 ### Kinect SDK
 
-You need to download and install the Kinect SDK from [here](https://www.microsoft.com/en-us/download/details.aspx?id=44561). This includes the USB drivers and some test programs you can use to make sure your Kinect is connected OK. Do not plug your sensor into your computer until you have installed the SDK - otherwise Windows might auto-detect the wrong device.
+You need to download and install the Kinect SDK from [here](https://www.microsoft.com/en-us/download/details.aspx?id=44561). This includes the USB drivers and some test programs you can use to make sure your Kinect is connected OK. **Do not plug your sensor into your computer until you have installed the SDK - otherwise Windows might auto-detect the wrong device.**
 
-### Software
+### Visual Studio
 
-The program in this repository compiles and runs on Windows 10 with Microsoft Visual Studio 2019 which must be installed to build the code. Just open it by double clicking the Kinect3DCamera.sln file in the Kinect3DCamera folder. 
+The program in this repository compiles and runs on Windows 10 with Microsoft Visual Studio 2022 which must be installed from [here](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=Community) and used to build the code. Just open it by double clicking the Kinect3DCamera.sln file in the Kinect3DCamera folder. 
 
 ## Problems
 
 ### USB sensor not recognised
 
-The software will crash if the Kinect is not connected properly when the program starts. The Kinect Sensor can be picky about its USB connection. Make sure that the connection is USB 3.0 and that it is directly to the PC (i.e. not via a hub). 
+The software may crash if the Kinect is not connected properly when the program starts. The Kinect Sensor can be picky about its USB connection. Make sure that the connection is USB 3.0 and that it is directly to the PC (i.e. not via a hub). 
 
 You can test your Kinect connection using the configuration tester app. You can start this from the SDK BRowser in the Kinect Software program group in the Start Menu:
 

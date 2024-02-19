@@ -3,50 +3,63 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Kinect 3D Camera" SizeToContent="WidthAndHeight" >
     <StackPanel>
-        <Image Name="kinectDepthImage" Height="480" Width="640" />
-        <TextBlock Name="FarCutoffTextBlock" Text="Far Cutoff"></TextBlock>
-        <Slider Name="FarSlider" Background="Blue" Minimum="100" Maximum="3500" Value="3500" ValueChanged="FarSlider_ValueChanged"></Slider>
-        <TextBlock Name="NearCutoffTextBlock" Text="Near Cutoff"></TextBlock>
-        <Slider Name="NearSlider" Background="Red" Minimum="100" Maximum="3500" Value="100" ValueChanged="NearSlider_ValueChanged"></Slider>
-        <TextBlock Name="PictureReliefTextBlock" Text="Picture Relief Height"></TextBlock>
-        <Slider Name="ModelHeightSlider" Background="Yellow" Minimum="1" Maximum="100" Value="30" ValueChanged="ModelHeightSlider_ValueChanged" ></Slider>
-        <TextBlock Name="PictureWidthTextBlock" Text="Picture Width"></TextBlock>
-        <Slider Name="ModelWidthSlider" Background="Yellow" Minimum="10" Maximum="200" Value="100" ValueChanged="ModelWidthSlider_ValueChanged"></Slider>
-        <TextBlock Name="NumberOfAveragesTextBlock" Text="Number of Averages"></TextBlock>
-        <Slider Name="NumberOfAverageSlider" Background="Green" Minimum="0" Maximum="49" Value="15" ValueChanged="AverageSlider_ValueChanged"></Slider>
         <StackPanel Orientation="Horizontal">
-            <Button Margin="10,10,10,10" Content="Take Picture" Click="SnapshotButton_Click"></Button>
-            <TextBlock Margin="10,10,10,10"  Text="Filename: "></TextBlock>
-            <TextBox Margin="10,10,10,10" Name="FileNameTextBox" Text="3Dpic" Width="200"></TextBox>
-            <Button Margin="10,10,10,10" Content="Take Selfie" Click="SelfieButton_Click"></Button>
-            <TextBox Margin="10,10,10,10" Name="SelfieTimeTextBox" Text="5" Width="50"></TextBox>
-            <Button Margin="10,10,10,10" Content="Help" Click="HelpButton_Click"></Button>
-            <Button Margin="10,10,10,10" Content="Test" Click="TestButton_Click"></Button>
-            <Button Margin="10,10,10,10" Content="New Test" Click="NewTestButton_Click"></Button>
-        </StackPanel>
-        <Viewport3D Name="viewport" Width="500" Height="500" MouseDown="Viewport3D_MouseDown" 
+            <Border BorderBrush="Black" BorderThickness="2" Margin="2">
+            <StackPanel Orientation="Vertical">
+            <Image Name="kinectDepthImage" Height="480" Width="640" />
+                <TextBlock Name="FarCutoffTextBlock" Text="Far Cutoff"></TextBlock>
+                <Slider Name="FarSlider" Background="Blue" Minimum="100" Maximum="3500" Value="3500" ValueChanged="FarSlider_ValueChanged"></Slider>
+                <TextBlock Name="NearCutoffTextBlock" Text="Near Cutoff"></TextBlock>
+                <Slider Name="NearSlider" Background="Red" Minimum="100" Maximum="3500" Value="100" ValueChanged="NearSlider_ValueChanged"></Slider>
+                <TextBlock Name="PictureReliefTextBlock" Text="Picture Relief Height"></TextBlock>
+                <Slider Name="ModelHeightSlider" Background="Yellow" Minimum="1" Maximum="100" Value="30" ValueChanged="ModelHeightSlider_ValueChanged" ></Slider>
+                <TextBlock Name="PictureWidthTextBlock" Text="Picture Width"></TextBlock>
+                <Slider Name="ModelWidthSlider" Background="Yellow" Minimum="10" Maximum="200" Value="100" ValueChanged="ModelWidthSlider_ValueChanged"></Slider>
+                <TextBlock Name="NumberOfAveragesTextBlock" Text="Number of Averages"></TextBlock>
+                <Slider Name="NumberOfAverageSlider" Background="Green" Minimum="0" Maximum="49" Value="15" ValueChanged="AverageSlider_ValueChanged"></Slider>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Margin="10,10,10,10" Content="Take Picture" Click="SnapshotButton_Click"></Button>
+                        <Button Margin="10,10,10,10" Content="Take Selfie" Click="SelfieButton_Click"></Button>
+                        <TextBox Margin="10,10,10,10" Name="SelfieTimeTextBox" Text="5" Width="50"></TextBox>
+                        <Button Margin="10,10,10,10" Content="Help" Click="HelpButton_Click"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border BorderBrush="Black" BorderThickness="2" Margin="2">
+                <StackPanel Orientation="Vertical">
+
+                    <Viewport3D VerticalAlignment="Top" Name="viewport" Width="640" Height="480" MouseDown="Viewport3D_MouseDown" 
             MouseMove="Viewport3D_MouseMove" 
             MouseWheel="Viewport3D_MouseWheel">
-            <!-- Camera -->
-            <Viewport3D.Camera>
-                <PerspectiveCamera x:Name="camera" Position="50,50,200" LookDirection="0,0,-200" UpDirection="0,1,0" />
-            </Viewport3D.Camera>
+                    <!-- Camera -->
+                    <Viewport3D.Camera>
+                        <PerspectiveCamera x:Name="camera" Position="50,50,200" LookDirection="0,0,-200" UpDirection="0,1,0" />
+                    </Viewport3D.Camera>
 
-            <!-- ModelVisual3D for the light source -->
-            <ModelVisual3D>
-                <ModelVisual3D.Content>
-                    <DirectionalLight Color="White" Direction="-1,-1,-1" />
-                </ModelVisual3D.Content>
-            </ModelVisual3D>
+                    <!-- ModelVisual3D for the light source -->
+                    <ModelVisual3D>
+                        <ModelVisual3D.Content>
+                            <DirectionalLight Color="White" Direction="-1,-1,-1" />
+                        </ModelVisual3D.Content>
+                    </ModelVisual3D>
 
-            <ModelVisual3D>
-                <ModelVisual3D.Content>
-                    <DirectionalLight Color="blue" Direction="-5,-5,-1" />
-                </ModelVisual3D.Content>
-            </ModelVisual3D>
+                    <ModelVisual3D>
+                        <ModelVisual3D.Content>
+                            <DirectionalLight Color="blue" Direction="-5,-5,-1" />
+                        </ModelVisual3D.Content>
+                    </ModelVisual3D>
 
-            <!-- ModelVisual3D for the geometry -->
-        </Viewport3D>
+                    <!-- ModelVisual3D for the geometry -->
+                    </Viewport3D>
+                    <Slider Name="HeightGainSlider" Background="Purple" Minimum=".01" Maximum=".1" Value="25" ValueChanged="HeightGainSlider_ValueChanged"></Slider>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="10,10,10,10"  Text="Filename: "></TextBlock>
+                        <TextBox Margin="10,10,10,10" Name="FileNameTextBox" Text="3Dpic" Width="200"></TextBox>
+                        <Button Margin="10,10,10,10" Content="Save STL File" Click="SaveButton_Click"></Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
 
     </StackPanel>
 </Window>

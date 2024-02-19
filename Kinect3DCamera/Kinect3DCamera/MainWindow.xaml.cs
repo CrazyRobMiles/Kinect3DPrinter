@@ -18,6 +18,7 @@ using System.IO;
 using System.Windows.Media.Media3D;
 using System.Diagnostics;
 using System.Windows.Controls.Primitives;
+using static System.Net.Mime.MediaTypeNames;
 
 
 // Kinect 3D Printer
@@ -31,6 +32,7 @@ namespace Kinect3DCamera
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Kinect data
         KinectSensor sensor = null;
         DepthFrameReader depth = null;
 
@@ -42,25 +44,55 @@ namespace Kinect3DCamera
         bool takeSnapShot = false;
         DateTime lastSnapshotTime = DateTime.Now;
         string filepath;
+        #endregion
 
+        #region Mesh data
         private Point previousMousePosition;
         private Transform3DGroup cameraTransform = new Transform3DGroup();
         private double totalYaw = 0.0;
         private double totalPitch = 0.0;
 
-        private bool Setup()
+        private MeshGeometry3D meshGeometry;
+        private ModelVisual3D modelVisual;
+
+        private double[,] outputGrid = null;
+        private double gridScale = 0.0;
+
+        #endregion
+
+
+        public MainWindow()
         {
-            // Assuming "myCamera" is your camera defined in XAML
-            camera.Transform = cameraTransform;
+            InitializeComponent();
             filepath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
+
+            #region Kinect Setup
             sensor = KinectSensor.GetDefault();
             sensor.IsAvailableChanged += sensor_IsAvailableChanged;
             depth = sensor.DepthFrameSource.OpenReader();
             depth.FrameArrived += depth_FrameArrived;
             sensor.Open();
-            return true;
+            #endregion
+
+            #region Mesh Display Setup
+
+            GeometryModel3D geometryModel = new GeometryModel3D();
+            meshGeometry = new MeshGeometry3D();
+            geometryModel.Geometry = meshGeometry;
+            geometryModel.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Gray));
+
+            modelVisual = new ModelVisual3D();
+            modelVisual.Content = geometryModel;
+
+            // Assuming you have a Viewport3D named "viewport" in your XAML
+            viewport.Children.Add(modelVisual);
+
+            camera.Transform = cameraTransform;
+
+            #endregion
         }
 
+        #region Kinect display
         private void UpdateSensorStatus()
         {
             if (sensor.IsAvailable)
@@ -109,6 +141,25 @@ namespace Kinect3DCamera
                     gridHeights = new ushort[frame.FrameDescription.LengthInPixels];
 
                 frame.CopyFrameDataToArray(depthData);
+
+
+                // need to flip the X order of the pixels so that the image is the right way round
+
+                for (int flipY = 0; flipY < height; flipY++)
+                {
+                    int startX = flipY * width;
+
+                    int endX = startX + width - 1;
+
+                    while (startX < endX)
+                    {
+                        ushort temp = depthData[startX];
+                        depthData[startX] = depthData[endX];
+                        depthData[endX] = temp;
+                        startX++;
+                        endX--;
+                    }
+                }
 
                 if (depthColorImage == null)
                     depthColorImage = new byte[frame.FrameDescription.LengthInPixels * 4];
@@ -174,30 +225,11 @@ namespace Kinect3DCamera
                 if (takeSnapShot)
                 {
                     takeSnapShot = false;
-
-                    string filename = FileNameTextBox.Text.Trim();
-
-                    if (filename.Length == 0)
-                    {
-                        MessageBox.Show("Please enter a filename", "File save failed");
-                        return;
-                    }
-
-                    string fullFilename = filepath + "\\" + filename + ".stl";
-
-                    try
-                    {
-                        float baseHeight = 1;
-                        float baseOffset = 0;
-
-                        StoreSTLMesh(gridHeights, (int)kinectDepthImage.Height, (int)kinectDepthImage.Width, modelWidth, modelHeight, baseHeight, baseOffset, fullFilename);
-                        // Set the start of the screen flash
-                        lastSnapshotTime = DateTime.Now;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("File name: " + fullFilename + " not written.\n" + ex.Message, "File save failed");
-                    }
+                    double[,] grid = DepthMapToGrid(gridHeights, (int)kinectDepthImage.Height, (int)kinectDepthImage.Width);
+                    outputGrid = FilterGrid(grid);
+                    gridScale = HeightGainSlider.Value;
+                    RenderGridToMesh(outputGrid, gridScale);
+                    lastSnapshotTime = DateTime.Now;
                 }
 
                 DateTime now = DateTime.Now;
@@ -343,6 +375,96 @@ namespace Kinect3DCamera
 
         #endregion
 
+        #endregion
+
+        public delegate double PlotHeightCalc(double x, double y);
+
+        /// <summary>
+        /// Plots a function into a grid
+        /// </summary>
+        /// <param name="heightCalc">Delegate function to calculate the height value</param>
+        /// <param name="minX">minimum value of X in the grid</param>
+        /// <param name="maxX">maximum value of X in the grid</param>
+        /// <param name="minY">minimum value of Y in the grid</param>
+        /// <param name="maxY">maximum value of Y in the grid</param>
+        /// <param name="meshWidth">width of output mesh</param>
+        /// <param name="meshDepth">depth of output mesh</param>
+        /// <param name="baseHeight">height of the base of the grid</param>
+        /// <returns>grid of height values</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public double[,] FuncPlotter(PlotHeightCalc heightCalc,
+            double minX, double maxX,
+            double minY, double maxY,
+            int meshWidth, int meshDepth,
+            double baseHeight)
+        {
+            double xRange = maxX - minX;
+            double yRange = maxY - minY;
+            double xStep = xRange / meshWidth;
+            double yStep = yRange / meshDepth;
+
+            double[,] result = new double[meshWidth, meshDepth];
+
+            for (int x = 0; x < meshWidth; x++)
+            {
+                double xInput = minX + (x * xStep);
+                for (int y = 0; y < meshDepth; y++)
+                {
+                    double yInput = minY + (y * yStep);
+                    double blockHeight = heightCalc(xInput, yInput) + baseHeight;
+                    if (blockHeight < 0)
+                    {
+                        throw new ArgumentException("Column height less than 0");
+                    }
+                    result[x, y] = blockHeight;
+                }
+            }
+            return result;
+        }
+
+        private void RenderGridToMesh(double[,] grid, double heightScale)
+        {
+            int width = grid.GetLength(0);
+            int depth = grid.GetLength(1);
+            int displayMeshPosition = 0;
+
+            meshGeometry.Positions.Clear();
+
+            // Add the vertices for the top of the grid
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < depth; y++)
+                {
+                    meshGeometry.Positions.Add(new Point3D(x, y, grid[x, y] * heightScale));
+                    displayMeshPosition += 1;
+                }
+            }
+
+            meshGeometry.TriangleIndices.Clear();
+
+            // Create triangles
+            for (int x = 0; x < width - 1; x++)
+            {
+                for (int y = 0; y < depth - 1; y++)
+                {
+                    int baseIndex = x * depth + y;
+
+                    // base triangle 1
+                    meshGeometry.TriangleIndices.Add(baseIndex);
+                    meshGeometry.TriangleIndices.Add(baseIndex + depth);
+                    meshGeometry.TriangleIndices.Add(baseIndex + 1);
+
+                    // base triangle 2
+                    meshGeometry.TriangleIndices.Add(baseIndex + 1);
+                    meshGeometry.TriangleIndices.Add(baseIndex + depth);
+                    meshGeometry.TriangleIndices.Add(baseIndex + depth + 1);
+
+                }
+            }
+
+            viewport.InvalidateVisual();
+        }
+
         #region Mesh Generation
 
         public struct Vertex
@@ -384,127 +506,6 @@ namespace Kinect3DCamera
             }
         }
 
-        public delegate double PlotHeightCalc (double x, double y);
-
-        /// <summary>
-        /// Plots a function into a grid
-        /// </summary>
-        /// <param name="heightCalc">Delegate function to calculate the height value</param>
-        /// <param name="minX">minimum value of X in the grid</param>
-        /// <param name="maxX">maximum value of X in the grid</param>
-        /// <param name="minY">minimum value of Y in the grid</param>
-        /// <param name="maxY">maximum value of Y in the grid</param>
-        /// <param name="plotWidth">width of the grid</param>
-        /// <param name="plotDepth">depth of the grid</param>
-        /// <param name="baseHeight">height of the base of the grid</param>
-        /// <returns>grid of height values</returns>
-        /// <exception cref="ArgumentException"></exception>
-        public double[,] FuncPlotter  (PlotHeightCalc heightCalc,
-            double minX, double maxX,
-            double minY, double maxY,
-            int plotWidth, int plotDepth,
-            double baseHeight)
-        {
-            double[,] grid = new double[plotWidth, plotDepth];
-            double xRange = maxX - minX;
-            double yRange = maxY - minY;
-            double xStep = xRange/ plotWidth;
-            double yStep = yRange/ plotDepth;
-
-            for(int x=0; x < plotWidth; x++)
-            {
-                double xInput = minX + (x * xStep);
-                for (int y=0; y<plotDepth; y++)
-                {
-                    double yInput = minY + (y * yStep);
-                    double blockHeight = heightCalc(xInput, yInput) + baseHeight;
-                    if(blockHeight < 0)
-                    {
-                        throw new ArgumentException("Column height less than 0");
-                    }
-                    grid[x, y] = blockHeight;
-                }
-            }
-
-            return grid;
-        }
-
-        /// <summary>
-        /// Creates a column for each height vlaue in the grid. Produces a list of triangles for an STL file. 
-        /// The grid must be at least 2 wide and 2 high.
-        /// </summary>
-        /// <param name="grid">3d grid of height values - none of which are less than 0</param>
-        /// <param name="x">x origin of mesh (added to each vertex x)</param>
-        /// <param name="y">y origin of mesh (added to each vertex  y)</param>
-        /// <param name="z">z origin of mesh (added to each vertex z)</param>
-        /// <param name="outputWidth">width of the output</param>
-        /// <param name="outputDepth">depth of the output </param>
-        /// <param name="heightScale"></param>
-        /// <returns>List of triangles for an STL file</returns>
-        public List<Triangle> ColumnPlot(double[,] grid,
-            double x, double y,double z, 
-            double outputWidth, double outputDepth, double heightScale)
-        {
-            List<Triangle> triangles = new List<Triangle>();
-
-            int width = grid.GetLength(0);
-            int depth = grid.GetLength(1);
-
-            double blockWidth = outputWidth / width;
-            double blockDepth = outputDepth / depth;
-
-            double zPos = z;
-
-            for (int xp = 0; xp < width-1; xp++)
-            {
-                double xPos = xp * blockWidth;
-
-                for (int yp = 0; yp < depth-1; yp++)
-                {
-                    double yPos = yp * blockDepth;
-
-                    // Get the vertices for the bottom and the top of the column
-
-                    Vertex b1 = new Vertex(xPos, yPos, zPos);
-                    Vertex b2 = new Vertex(xPos + blockWidth, yPos, zPos);
-                    Vertex b3 = new Vertex(xPos + blockWidth, yPos + blockDepth, zPos);
-                    Vertex b4 = new Vertex(xPos, yPos + blockDepth, zPos);
-
-                    Vertex t1 = new Vertex(xPos, yPos, zPos + (grid[xp,yp] * heightScale));
-                    Vertex t2 = new Vertex(xPos + blockWidth, yPos, zPos + (grid[xp + 1, yp] * heightScale));
-                    Vertex t3 = new Vertex(xPos + blockWidth, yPos + blockDepth, zPos + (grid[xp + 1, yp + 1] * heightScale));
-                    Vertex t4 = new Vertex(xPos, yPos + blockDepth, zPos + (grid[xp, yp + 1] * heightScale));
-
-                    // Bottom of the column
-                    triangles.Add(new Triangle(b1, b2, b3));
-                    triangles.Add(new Triangle(b1, b3, b4));
-
-
-                    // Top of the column
-                    triangles.Add(new Triangle(t1, t2, t3));
-                    triangles.Add(new Triangle(t1, t3, t4));
-
-
-                    // Left hand side of the column
-                    triangles.Add(new Triangle(b1, t1, b4));
-                    triangles.Add(new Triangle(t1, t4, b4));
-
-                    // Right hand side of the column
-                    triangles.Add(new Triangle(b2, t2, b3));
-                    triangles.Add(new Triangle(t2, t3, b3));
-
-                    //Front side of the column
-                    triangles.Add(new Triangle(b1, b2, t2));
-                    triangles.Add(new Triangle(t2, t1, b1));
-
-                    //Back side of the column
-                    triangles.Add(new Triangle(b4, b3, t3));
-                   triangles.Add(new Triangle(t3, t4, b4));
-                }
-            }
-            return triangles;
-        }
-
         /// <summary>
         /// Takes a 2D array of double values and creates a mesh of triangles for a 3D plot of the data
         /// </summary>
@@ -513,10 +514,12 @@ namespace Kinect3DCamera
         /// <param name="baseHeight">height of the base in mm</param>
         /// <param name="modelHeight">height of highest part of the model, in mm. The plotter finds the highest and lowest points in the grid and scales appropriately.</param>
         /// <returns>a list of triangles that make up the mesh</returns>
-        public List<Triangle> SolidPlot(double[,] grid, double modelWidth, double baseHeight, double modelHeight)
+        public List<Triangle> OldSolidPlot(double[,] outputGrid, double modelWidth, double baseHeight, double modelHeight, double gridScale)
         {
-            int width = grid.GetLength(0);
-            int depth = grid.GetLength(1);
+            int width = outputGrid.GetLength(0);
+            int depth = outputGrid.GetLength(1);
+
+            double[,] grid = new double[width, depth];
 
             List<Triangle> result = new List<Triangle>();
 
@@ -527,8 +530,10 @@ namespace Kinect3DCamera
             {
                 for (int y = 0; y < depth; y++)
                 {
-                    if (grid[x, y] > hi) hi = grid[x, y];
-                    if (grid[x, y] < lo) lo = grid[x, y];
+                    double scaledValue = grid[x, y] * gridScale;
+                    grid[x, y] = scaledValue;
+                    if (grid[x, y] > hi) hi = scaledValue;
+                    if (grid[x, y] < lo) lo = scaledValue;
                 }
             }
 
@@ -544,10 +549,10 @@ namespace Kinect3DCamera
             double bx = 0;
             double by = 0;
 
-            for (int x = 0; x < width-1; x++)
+            for (int x = 0; x < width - 1; x++)
             {
                 by = 0;
-                for (int y = 0; y < depth-1; y++)
+                for (int y = 0; y < depth - 1; y++)
                 {
                     // Make the first triangle
                     Vertex v1 = new Vertex(bx, by, 0);
@@ -654,20 +659,71 @@ namespace Kinect3DCamera
             return result;
         }
 
-        List<Triangle> MakeMesh(ushort[] image, int width, int depth, int modelWidth, int modelHeight, float baseHeight, float baseOffset)
+        void WriteTriangles(List<Triangle> grid, string filename)
+        {
+            using (BinaryWriter f = new BinaryWriter(File.Open(filename, FileMode.Create)))
+            {
+
+                // Write out the header - 80 spaces
+                for (int i = 0; i < 80; i++)
+                    f.Write((byte)' ');
+
+                // Write out the number of triangles 
+                f.Write((UInt32)grid.Count);
+
+                // Write out the triangles
+                foreach (Triangle t in grid)
+                {
+                    // Write out the normal
+                    f.Write((float)0);
+                    f.Write((float)0);
+                    f.Write((float)0);
+                    // Write out the vertex
+                    t.STLWrite(f);
+                    f.Write((UInt16)0);
+                }
+
+                f.Close();
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Takes in a distance camera frame and converts it into a 2D grid of height values
+        /// The frame is expressed as a linear array of distance values.
+        /// </summary>
+        /// <param name="image">source </param>
+        /// <param name="width">width (must agree with data format from sensor)</param>
+        /// <param name="depth">depth (must agree with data format from sensor)</param>
+        /// <returns></returns>
+        double[,] DepthMapToGrid(ushort[] image, int width, int depth)
         {
             int imagePos = 0;
-            double[,] grid = new double[width, depth];
+            double[,] grid = new double[depth, width];
 
 
             for (int x = width - 1; x > 0; x--)
             {
                 for (int y = 0; y < depth; y++)
                 {
-                    grid[x, y] = image[imagePos] + baseOffset;
+                    grid[y, x] = image[imagePos];
                     imagePos++;
                 }
             }
+            return grid;
+        }
+
+        /// <summary>
+        /// Takes an input grid and halves the resolution, performing averaging and outlier removal
+        /// </summary>
+        /// <param name="grid">input grid</param>
+        /// <returns>output grid</returns>
+        double[,] FilterGrid(double[,] grid)
+        {
+
+            int width = grid.GetLength(0);
+            int depth = grid.GetLength(1);
 
             // Now halve the resolution and remove any outliers
 
@@ -676,6 +732,7 @@ namespace Kinect3DCamera
             if (depth % 2 == 1) depth--;
 
             double[,] filteredGrid = new double[width / 2, depth / 2];
+
             int filtx = 0, filty = 0;
 
             for (int x = 0; x < width - 2; x += 2)
@@ -738,98 +795,7 @@ namespace Kinect3DCamera
                 filty = 0;
             }
 
-            List<Triangle> result = SolidPlot(grid: filteredGrid, modelWidth: modelWidth, baseHeight: baseHeight, modelHeight: modelHeight);
-            return result;
-        }
-
-        /// <summary>
-        /// Stores a linear array of height values as an STL mesh. 
-        /// </summary>
-        /// <param name="image">image data</param>
-        /// <param name="width">width of the image in pixels</param>
-        /// <param name="depth">depth of the image in pixels</param>
-        /// <param name="modelHeight">height of the highest part of the model</param>
-        /// <param name="modelHeight">height of the highest part of the model</param>
-        /// <param name="baseHeight">height of the base of the plate produced</param>
-        /// <param name="baseOffset">offset of the base z value to allow plates to be stacked.</param>
-        /// <param name="filename"></param>
-        public void StoreSTLMesh(ushort[] image, int width, int depth, int modelWidth, int modelHeight, float baseHeight, float baseOffset, string filename)
-        {
-            List<Triangle> mesh = MakeMesh(image, width, depth, modelWidth, modelHeight, baseHeight, baseOffset);
-            WriteTriangles(mesh, filename);
-        }
-
-        void WriteTriangles(List<Triangle> grid, string filename)
-        {
-            using (BinaryWriter f = new BinaryWriter(File.Open(filename, FileMode.Create)))
-            {
-
-                // Write out the header - 80 spaces
-                for (int i = 0; i < 80; i++)
-                    f.Write((byte)' ');
-
-                // Write out the number of triangles 
-                f.Write((UInt32)grid.Count);
-
-                // Write out the triangles
-                foreach (Triangle t in grid)
-                {
-                    // Write out the normal
-                    f.Write((float)0);
-                    f.Write((float)0);
-                    f.Write((float)0);
-                    // Write out the vertex
-                    t.STLWrite(f);
-                    f.Write((UInt16)0);
-                }
-
-                f.Close();
-            }
-        }
-
-
-        #endregion
-        public MainWindow()
-        {
-            InitializeComponent();
-            Setup();
-        }
-
-        private void SnapshotButton_Click(object sender, RoutedEventArgs e)
-        {
-            takeSnapShot = true;
-        }
-
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show(
-@"The Far Cutoff slider sets the back plane of the picture
-The Near Cutoff slider sets the front plane. 
-Areas that are red (too close) or blue (too far away) are not rendered.
-Areas in Grey Scale will be rendered.
-Distances are in mm.
-
-Press Take Picture to produce an STL file in your Documents folder.
-The screen will flash if the picture has been successfully stored.
-You can enter your own filenames.
-
-To take a Selfie press the Take Selfie button. 
-Set the delay in the box next to the button.
-
-The ModelWidth slider sets the width of the model produced in mm.
-The ModelHeight slider sets the height of the model, in mm.
-
-The Number of Averages controls the amount of averaging that is done.
-Larger averages make for a more detailed scene, but make the viewfinder
-update more slowly.
-
-Needs Kinect Version 2 in a USB 3 port.
-
-github.com/CrazyRobMiles/Kinect3DPrinter
-
-www.robmiles.com
-September 2014
-", "Kinect 3D Camera Version 2.0");
+            return filteredGrid;
         }
 
 
@@ -883,6 +849,7 @@ September 2014
 
         #endregion
 
+        #region Event Handlers
         private void FarSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             FarCutoffTextBlock.Text = "Far Cutoff : " + Math.Round(FarSlider.Value).ToString();
@@ -914,137 +881,66 @@ September 2014
             SetNoOfAverages((int)Math.Round(NumberOfAverageSlider.Value));
         }
 
-
-private MeshGeometry3D CreateTerrainMesh(double[,] heightData)
-    {
-        int width = heightData.GetLength(0);
-        int height = heightData.GetLength(1);
-        MeshGeometry3D mesh = new MeshGeometry3D();
-
-        // Create vertices
-        for (int x = 0; x < width; x++)
+        private void SnapshotButton_Click(object sender, RoutedEventArgs e)
         {
-            for (int y = 0; y < height; y++)
-            {
-                mesh.Positions.Add(new Point3D(x, y, heightData[x, y]));
-            }
+            takeSnapShot = true;
         }
 
-        // Create triangles
-        for (int x = 0; x < width - 1; x++)
+        private void HeightGainSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            for (int y = 0; y < height - 1; y++)
-            {
-                int baseIndex = x * height + y;
 
-                // Triangle 1
-                mesh.TriangleIndices.Add(baseIndex);
-                mesh.TriangleIndices.Add(baseIndex + height);
-                mesh.TriangleIndices.Add(baseIndex + 1);
-
-                // Triangle 2
-                mesh.TriangleIndices.Add(baseIndex + 1);
-                mesh.TriangleIndices.Add(baseIndex + height);
-                mesh.TriangleIndices.Add(baseIndex + height + 1);
-            }
         }
 
-        return mesh;
-    }
 
-    class SurfaceLayer
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            int no;
-            public double[,] surface;
+            MessageBox.Show(
+@"The Far Cutoff slider sets the back plane of the picture
+The Near Cutoff slider sets the front plane. 
+Areas that are red (too close) or blue (too far away) are not rendered.
+Areas in Grey Scale will be rendered.
+Distances are in mm.
 
-            public SurfaceLayer(int width, int depth, int no)
-            {
-                this.no = no;
-                this.surface = new double[width, depth];
-            }
+Press Take Picture to produce an STL file in your Documents folder.
+The screen will flash if the picture has been successfully stored.
+You can enter your own filenames.
+
+To take a Selfie press the Take Selfie button. 
+Set the delay in the box next to the button.
+
+The ModelWidth slider sets the width of the model produced in mm.
+The ModelHeight slider sets the height of the model, in mm.
+
+The Number of Averages controls the amount of averaging that is done.
+Larger averages make for a more detailed scene, but make the viewfinder
+update more slowly.
+
+Needs Kinect Version 2 in a USB 3 port.
+
+github.com/CrazyRobMiles/Kinect3DPrinter
+
+www.robmiles.com
+September 2014
+", "Kinect 3D Camera Version 2.0");
         }
-
 
         private void NewTestButton_Click(object sender, RoutedEventArgs e)
         {
-            double[,] mesh = new double [,] { { 1, 1, 2 }, { 3, 3, 4 } };
-
-            double range = Math.PI;
-
-            mesh = FuncPlotter(delegate (double x, double y)
-            {
-                    return Math.Sin(x)  + 0.5;
-            },
-            -range,range,-range,range,200,200,20);
-
-            List<Triangle> triangles = ColumnPlot(mesh, 0, 0, 0, 200, 200, 50);
-
-            WriteTriangles(triangles, "triTry1.stl");
-
         }
 
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void SinesButton_Click(object sender, RoutedEventArgs e)
         {
-            int width = 100;
-            int depth = 100;
-            int noOfLayers = 4;
-            int spotWidth = 2;
-            int spotDepth = 2;
+            double range = Math.PI;
 
-            width = (int)(width / spotWidth) * spotWidth;
-            depth = (int)(depth / spotDepth) * spotDepth;
-
-            SurfaceLayer[] layers = new SurfaceLayer[noOfLayers];
-
-            for(int i = 0;i< noOfLayers; i++)
+            double[,] grid = FuncPlotter(delegate (double x, double y)
             {
-                layers[i] = new SurfaceLayer(width, depth, i);
-            }
 
-            int layerCount = 0;
+                return (Math.Sin(5*x) +Math.Cos(5*y)+ 2.5) * 100;
+            },
+            -range, range, -range, range, 480, 320, 20);
 
-            for (int i = 0; i < width; i+=spotWidth)
-            {
-                for (int j = 0; j < depth; j+=spotDepth)
-                {
-                    for (int iSpot = 0; iSpot < spotWidth; iSpot++)
-                    {
-                        for (int jSpot = 0; jSpot < spotDepth; jSpot++)
-                        {
-                            int iv = i + iSpot;
-                            int jv = j + jSpot;
-                            layers[layerCount].surface[iv, jv] = 5;
-                        }
-                    }
-                    layerCount++;
-                    if(layerCount == noOfLayers)
-                    {
-                        layerCount = 0;
-                    }
-                }
-            }
-
-            for(int layer = 0; layer < layers.Length; layer++)
-            {
-                var stlMesh = SolidPlot(layers[layer].surface, 100, 2, 20);
-
-                string name = "sine" + layer + ".stl";
-
-                WriteTriangles(stlMesh, name);
-
-            }
-
-            MeshGeometry3D terrainMesh = CreateTerrainMesh(layers[0].surface);
-            GeometryModel3D geometryModel = new GeometryModel3D();
-            geometryModel.Geometry = terrainMesh;
-            geometryModel.Material = new DiffuseMaterial(new SolidColorBrush(Colors.Gray));
-
-            ModelVisual3D modelVisual = new ModelVisual3D();
-            modelVisual.Content = geometryModel;
-
-            // Assuming you have a Viewport3D named "viewport" in your XAML
-            viewport.Children.Add(modelVisual);
+            RenderGridToMesh(grid, 1);
 
         }
 
@@ -1088,6 +984,184 @@ private MeshGeometry3D CreateTerrainMesh(double[,] heightData)
                 camera.Position = new Point3D(camera.Position.X * (1 + zoomFactor), camera.Position.Y * (1 + zoomFactor), camera.Position.Z * (1 + zoomFactor));
         }
 
+
+        /// <summary>
+        /// Takes a 2D array of double values and creates a mesh of triangles for a 3D plot of the data
+        /// </summary>
+        /// <param name="grid">source grid</param>
+        /// <param name="modelWidth">width of the model in mm to be printed. The depth of the model is calculated automatically from the aspect ratio of the grid.</param>
+        /// <param name="baseHeight">height of the base in mm</param>
+        /// <param name="modelHeight">height of highest part of the model, in mm. The plotter finds the highest and lowest points in the grid and scales appropriately.</param>
+        /// <returns>a list of triangles that make up the mesh</returns>
+        public List<Triangle> SolidPlot(double[,] grid, double modelWidth, double baseHeight, double modelHeight)
+        {
+            int width = grid.GetLength(0);
+            int depth = grid.GetLength(1);
+
+            List<Triangle> result = new List<Triangle>();
+
+            // Find the lowest and highest values 
+            double hi = grid[0, 0];
+            double lo = hi;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < depth; y++)
+                {
+                    if (grid[x, y] > hi) hi = grid[x, y];
+                    if (grid[x, y] < lo) lo = grid[x, y];
+                }
+            }
+
+            // Heights and steps
+
+            double modelDepth = (double)modelWidth * ((double)depth / (double)width);
+            double gridHeight = hi - lo;
+            double heightScale = modelHeight / gridHeight;
+            double xstep = modelWidth / width;
+            double ystep = modelDepth / depth;
+
+            // Add the base
+            double bx = 0;
+            double by = 0;
+
+            for (int x = 0; x < width; x++)
+            {
+                by = 0;
+                for (int y = 0; y < depth; y++)
+                {
+                    // Make the first triangle
+                    Vertex v1 = new Vertex(bx, by, 0);
+                    Vertex v2 = new Vertex(bx, by + ystep, 0);
+                    Vertex v3 = new Vertex(bx + xstep, by + ystep, 0);
+                    result.Add(new Triangle(v1, v2, v3));
+
+                    // Make the second triangle
+                    v1 = new Vertex(bx, by, 0);
+                    v2 = new Vertex(bx + xstep, by, 0);
+                    v3 = new Vertex(bx + xstep, by + ystep, 0);
+                    result.Add(new Triangle(v1, v2, v3));
+                    by = by + ystep;
+                }
+                bx = bx + xstep;
+            }
+
+            bx = 0;
+            by = 0;
+            int ycell = 0;
+
+            // Now fill in the base to the mesh edges
+            for (int x = 0; x < width - 1; x++)
+            {
+                // Make the base sides
+                Vertex v1 = new Vertex(bx, by, 0);
+                Vertex v2 = new Vertex(bx + xstep, by, 0);
+                Vertex v3 = new Vertex(bx + xstep, by, (grid[x + 1, ycell] - lo) * heightScale + baseHeight);
+                Vertex v4 = new Vertex(bx, by, (grid[x, ycell] - lo) * heightScale + baseHeight);
+                result.Add(new Triangle(v1, v2, v3));
+                result.Add(new Triangle(v1, v3, v4));
+                bx = bx + xstep;
+            }
+
+
+            by = (depth - 1) * ystep;
+            ycell = (int)depth - 1;
+            bx = 0;
+            //  Now fill in the base to the mesh edges
+            for (int x = 0; x < width - 1; x++)
+            {
+                // Make the base sides
+                Vertex v1 = new Vertex(bx, by, 0);
+                Vertex v2 = new Vertex(bx + xstep, by, 0);
+                Vertex v3 = new Vertex(bx + xstep, by, (grid[x + 1, ycell] - lo) * heightScale + baseHeight);
+                Vertex v4 = new Vertex(bx, by, (grid[x, ycell] - lo) * heightScale + baseHeight);
+                result.Add(new Triangle(v1, v2, v3));
+                result.Add(new Triangle(v1, v3, v4));
+                bx = bx + xstep;
+            }
+
+            by = 0;
+            bx = 0;
+            int xcell = 0;
+
+            // Now fill in the base to the mesh edges
+            for (int y = 0; y < depth - 1; y++)
+            {
+                // Make the base sides
+                Vertex v1 = new Vertex(bx, by, 0);
+                Vertex v2 = new Vertex(bx, by + ystep, 0);
+                Vertex v3 = new Vertex(bx, by + ystep, (grid[xcell, y + 1] - lo) * heightScale + baseHeight);
+                Vertex v4 = new Vertex(bx, by, (grid[xcell, y] - lo) * heightScale + baseHeight);
+                result.Add(new Triangle(v1, v2, v3));
+                result.Add(new Triangle(v1, v3, v4));
+                by = by + ystep;
+            }
+
+            by = 0;
+            bx = (width - 1) * xstep;
+            xcell = (int)width - 1;
+            // Now fill in the base to the mesh edges
+            for (int y = 0; y < depth - 1; y++)
+            {
+                // Make the base sides
+                Vertex v1 = new Vertex(bx, by, 0);
+                Vertex v2 = new Vertex(bx, by + ystep, 0);
+                Vertex v3 = new Vertex(bx, by + ystep, (grid[xcell, y + 1] - lo) * heightScale + baseHeight);
+                Vertex v4 = new Vertex(bx, by, (grid[xcell, y] - lo) * heightScale + baseHeight);
+                result.Add(new Triangle(v1, v2, v3));
+                result.Add(new Triangle(v1, v3, v4));
+                by = by + ystep;
+            }
+
+            // Now make the mesh
+
+            bx = 0;
+            for (int x = 0; x < width - 1; x++)
+            {
+                by = 0;
+                for (int y = 0; y < depth - 1; y++)
+                {
+                    // Make the first triangle
+                    Vertex v1 = new Vertex(bx, by, (grid[x, y] - lo) * heightScale + baseHeight);
+                    Vertex v2 = new Vertex(bx + xstep, by, (grid[x + 1, y] - lo) * heightScale + baseHeight);
+                    Vertex v3 = new Vertex(bx + xstep, by + ystep, (grid[x + 1, y + 1] - lo) * heightScale + baseHeight);
+                    Vertex v4 = new Vertex(bx, by + ystep, (grid[x, y + 1] - lo) * heightScale + baseHeight);
+                    result.Add(new Triangle(v1, v2, v3));
+                    result.Add(new Triangle(v1, v3, v4));
+                    by = by + ystep;
+                }
+                bx = bx + xstep;
+            }
+            return result;
+        }
+
+
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            string filename = FileNameTextBox.Text.Trim();
+
+            if (filename.Length == 0)
+            {
+                MessageBox.Show("Please enter a filename", "File save failed");
+                return;
+            }
+
+            string fullFilename = filepath + "\\" + filename + ".stl";
+
+            try
+            {
+                gridScale = HeightGainSlider.Value;
+                List<Triangle> mesh = SolidPlot(grid: outputGrid, modelWidth:120, baseHeight:3, modelHeight:40);
+                WriteTriangles(mesh, fullFilename);
+                MessageBox.Show("File written: "+ fullFilename);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("File name: " + fullFilename + " not written.\n" + ex.Message, "File save failed");
+            }
+        }
+
+        #endregion
 
 
     }
